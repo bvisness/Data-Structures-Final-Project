@@ -115,6 +115,14 @@ public class Model {
 		return true;
 	}
 	
+	public void placeTile(int x, int y, Tile tile) {
+		if (!isMoveValid(x, y, tile)) {
+			throw new InvalidMoveException("Tile " + tile + " at (" + x + "," + y + ")");
+		}
+		board[x][y] = tile;
+		// TODO Do all the other tile placing business!
+	}
+	
 	public String toString() {
 		String result = "";
 		for (int y = 0; y < board[0].length; y++) {

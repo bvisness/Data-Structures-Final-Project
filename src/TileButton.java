@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -8,10 +9,20 @@ import java.awt.Color;
 
 public class TileButton extends JButton {
 	
+	/**
+	 * Nope!
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private Tile tile;
+	
+	private int x;
+	
+	private int y;
 	
 	void setTile(Tile tile) {
 		this.tile = tile;
+		removeAll();
 		
 		if (tile != null) {
 			this.add(typePanel(Tile.NORTH), BorderLayout.NORTH);
@@ -26,13 +37,29 @@ public class TileButton extends JButton {
 			ownerPanel.add(ownerPanel(Tile.WEST), BorderLayout.WEST);
 			this.add(ownerPanel, BorderLayout.CENTER);
 		}
+		
+		validate();
+		repaint();
 	}
 	
-	public TileButton(Tile tile) {
+	public TileButton(int x, int y, Tile tile) {
+		this.x = x;
+		this.y = y;
+		
+		this.setBackground(Color.MAGENTA);
 		this.setLayout(new BorderLayout());
+		this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		setTile(tile);
 	}
 	
+	public int getGameX() {
+		return x;
+	}
+
+	public int getGameY() {
+		return y;
+	}
+
 	private Color getTypeColor(Quadrant quadrant) {
 		switch (quadrant.getType()) {
 		case GRASS:

@@ -1,11 +1,13 @@
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 
-public class GUI extends JFrame {
+public class GUI extends JFrame implements ActionListener {
 	
 	/**
 	 * Meh, warnings
@@ -22,7 +24,8 @@ public class GUI extends JFrame {
 		
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
-				TileButton newButton = new TileButton(model.getTile(x, y));
+				TileButton newButton = new TileButton(x, y, model.getTile(x, y));
+				newButton.addActionListener(this);
 				mainPanel.add(newButton);
 			}
 		}
@@ -38,6 +41,24 @@ public class GUI extends JFrame {
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
 		GUI gui = new GUI();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		if (e.getSource() instanceof TileButton) {
+			// TODO Clearly this should not be random
+			TileButton theButton = (TileButton)e.getSource();
+			Tile newTile = Tile.randomTile();
+			System.out.println("Trying to add tile " + newTile);
+			if (model.isMoveValid(theButton.getGameX(), theButton.getGameY(), newTile)) {
+				model.placeTile(theButton.getGameX(), theButton.getGameY(), newTile);
+				theButton.setTile(newTile);
+				System.out.println("Tile added");
+			}
+			theButton.repaint();
+		}
+		
 	}
 
 }
