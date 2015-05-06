@@ -22,10 +22,6 @@ public class Tile {
 		return quadrants;
 	}
 
-	public void setQuadrants(Quadrant[] quadrants) {
-		this.quadrants = quadrants;
-	}
-
 	public boolean areRoadsComplete() {
 		return roadsComplete;
 	}
