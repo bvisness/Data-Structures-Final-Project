@@ -39,11 +39,19 @@ public class Model {
 		this.turn = turn;
 	}
 	
+	public Model(int size) {
+		if (size % 2 == 0) {
+			throw new IllegalArgumentException(size + ": The game board size must be odd so it has a middle space.");
+		}
+		board = new Tile[size][size];
+		board[size / 2][size / 2] = Tile.randomTile();
+	}
+	
 	public boolean isMoveValid(int x, int y, Tile tile) throws ArrayIndexOutOfBoundsException {
 		// Error if checking outside the game board - this is enough of
 		// a problem to warrant an exception.
 		if (x < 0 || y < 0 || x >= board.length || y >= board[0].length) {
-			throw new ArrayIndexOutOfBoundsException("(" + x + "," + y + ") is outside the game board");
+			throw new ArrayIndexOutOfBoundsException("(" + x + "," + y + "): outside the game board");
 		}
 		
 		// False if there is already a tile where we want to place.
@@ -89,6 +97,17 @@ public class Model {
 		
 		// It passed all the tests!
 		return true;
+	}
+	
+	public String toString() {
+		String result = "";
+		for (int y = 0; y < board[0].length; y++) {
+			for (int x = 0; x < board.length; x++) {
+				result += board[x][y] + "\t";
+			}
+			result += "\n";
+		}
+		return result;
 	}
 
 }

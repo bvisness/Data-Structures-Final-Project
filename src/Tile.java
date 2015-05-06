@@ -44,8 +44,19 @@ public class Tile {
 	
 	public Tile() {
 		quadrants = new Quadrant[4];
+		for (int i = 0; i < 4; i++) {
+			quadrants[i] = new Quadrant();
+		}
 		roadsComplete = false;
 		citiesComplete = false;
+	}
+	
+	public static Tile randomTile() {
+		Tile newTile = new Tile();
+		for (int i = 0; i < 4; i++) {
+			newTile.quadrants[i].setType(Quadrant.QuadrantType.randomType());
+		}
+		return newTile;
 	}
 	
 	public void rotateLeft() {
@@ -62,6 +73,14 @@ public class Tile {
 		quadrants[WEST] = quadrants[SOUTH];
 		quadrants[SOUTH] = quadrants[EAST];
 		quadrants[EAST] = tmp;
+	}
+	
+	public String toString() {
+		return "N: " + quadrants[NORTH]
+				+ ". E: "+ quadrants[EAST]
+				+ ". S: "+ quadrants[SOUTH]
+				+ ". W: " + quadrants[WEST]
+				+ ".";
 	}
 
 }
