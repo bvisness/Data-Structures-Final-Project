@@ -61,8 +61,8 @@ public class Model {
 		
 		// Check north
 		if (y > 0 && board[x][y-1] != null) {
-			Quadrant.QuadrantType thisType = tile.getQuadrants()[Tile.NORTH].getType();
-			Quadrant.QuadrantType neighborType = board[x][y-1].getQuadrants()[Tile.SOUTH].getType();
+			QuadrantType thisType = tile.getQuadrants()[Tile.NORTH].getType();
+			QuadrantType neighborType = board[x][y-1].getQuadrants()[Tile.SOUTH].getType();
 			if (thisType != neighborType) {
 				return false;
 			}
@@ -70,8 +70,8 @@ public class Model {
 		
 		// Check east
 		if (x < board.length - 1 && board[x+1][y] != null) {
-			Quadrant.QuadrantType thisType = tile.getQuadrants()[Tile.EAST].getType();
-			Quadrant.QuadrantType neighborType = board[x+1][y].getQuadrants()[Tile.WEST].getType();
+			QuadrantType thisType = tile.getQuadrants()[Tile.EAST].getType();
+			QuadrantType neighborType = board[x+1][y].getQuadrants()[Tile.WEST].getType();
 			if (thisType != neighborType) {
 				return false;
 			}
@@ -79,8 +79,8 @@ public class Model {
 		
 		// Check south
 		if (y < board[0].length - 1 && board[x][y+1] != null) {
-			Quadrant.QuadrantType thisType = tile.getQuadrants()[Tile.SOUTH].getType();
-			Quadrant.QuadrantType neighborType = board[x][y+1].getQuadrants()[Tile.NORTH].getType();
+			QuadrantType thisType = tile.getQuadrants()[Tile.SOUTH].getType();
+			QuadrantType neighborType = board[x][y+1].getQuadrants()[Tile.NORTH].getType();
 			if (thisType != neighborType) {
 				return false;
 			}
@@ -88,8 +88,8 @@ public class Model {
 		
 		// Check west
 		if (x > 0 && board[x-1][y] != null) {
-			Quadrant.QuadrantType thisType = tile.getQuadrants()[Tile.WEST].getType();
-			Quadrant.QuadrantType neighborType = board[x-1][y].getQuadrants()[Tile.EAST].getType();
+			QuadrantType thisType = tile.getQuadrants()[Tile.WEST].getType();
+			QuadrantType neighborType = board[x-1][y].getQuadrants()[Tile.EAST].getType();
 			if (thisType != neighborType) {
 				return false;
 			}

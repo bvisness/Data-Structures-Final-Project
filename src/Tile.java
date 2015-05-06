@@ -54,7 +54,7 @@ public class Tile {
 	public static Tile randomTile() {
 		Tile newTile = new Tile();
 		for (int i = 0; i < 4; i++) {
-			newTile.quadrants[i].setType(Quadrant.QuadrantType.randomType());
+			newTile.quadrants[i].setType(QuadrantType.randomType());
 		}
 		return newTile;
 	}
