@@ -14,6 +14,14 @@ public class Model {
 	public enum TurnType { RED, BLUE };
 	
 	private TurnType turn;
+	
+	public Tile getTile(int x, int y) {
+		try {
+			return board[x][y];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("(" + x + "," + y + "): outside the game board");
+		}
+	}
 
 	public int getRedScore() {
 		return redScore;
@@ -47,12 +55,10 @@ public class Model {
 		board[size / 2][size / 2] = Tile.randomTile();
 	}
 	
-	public boolean isMoveValid(int x, int y, Tile tile) throws ArrayIndexOutOfBoundsException {
-		// Error if checking outside the game board - this is enough of
-		// a problem to warrant an exception.
-		if (x < 0 || y < 0 || x >= board.length || y >= board[0].length) {
-			throw new ArrayIndexOutOfBoundsException("(" + x + "," + y + "): outside the game board");
-		}
+	public boolean isMoveValid(int x, int y, Tile tile) {
+		// Try to get the tile where we are placing - this will trigger an exception
+		// if the indices are out of bounds.
+		getTile(x, y);
 		
 		// False if there is already a tile where we want to place.
 		if (board[x][y] != null) {
