@@ -24,5 +24,10 @@ public class Quadrant {
 	public void setOwner(OwnerType owner) {
 		this.owner = owner;
 	}
+	
+	public Quadrant() {
+		type = QuadrantType.GRASS;
+		owner = OwnerType.NONE;
+	}
 
 }

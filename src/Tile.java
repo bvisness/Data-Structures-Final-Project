@@ -42,6 +42,12 @@ public class Tile {
 		this.citiesComplete = citiesComplete;
 	}
 	
+	public Tile() {
+		quadrants = new Quadrant[4];
+		roadsComplete = false;
+		citiesComplete = false;
+	}
+	
 	public void rotateLeft() {
 		Quadrant tmp = quadrants[NORTH];
 		quadrants[NORTH] = quadrants[EAST];
