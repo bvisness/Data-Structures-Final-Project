@@ -3,8 +3,6 @@ import java.util.Random;
 
 public class Quadrant {
 	
-	public enum OwnerType { NONE, RED, BLUE };
-	
 	private QuadrantType type;
 	
 	private OwnerType owner;
