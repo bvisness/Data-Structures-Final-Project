@@ -35,7 +35,7 @@ public class Model {
 		return blueScore;
 	}
 
-	public void setBlueScore(int blueScore) {
+	private void setBlueScore(int blueScore) {
 		this.blueScore = blueScore;
 	}
 
@@ -43,7 +43,7 @@ public class Model {
 		return turn;
 	}
 
-	public void setTurn(TurnType turn) {
+	private void setTurn(TurnType turn) {
 		this.turn = turn;
 	}
 	
@@ -53,74 +53,6 @@ public class Model {
 		}
 		board = new Tile[size][size];
 		board[size / 2][size / 2] = Tile.randomTile();
-	}
-	
-	public boolean isMoveValid(int x, int y, Tile tile) {
-		// Try to get the tile where we are placing - this will trigger an exception
-		// if the indices are out of bounds.
-		getTile(x, y);
-		
-		// False if there is already a tile where we want to place.
-		if (board[x][y] != null) {
-			return false;
-		}
-		
-		boolean isNeighbor = false;
-		
-		// Check north
-		if (y > 0 && board[x][y-1] != null) {
-			isNeighbor = true;
-			QuadrantType thisType = tile.getQuadrants()[Tile.NORTH].getType();
-			QuadrantType neighborType = board[x][y-1].getQuadrants()[Tile.SOUTH].getType();
-			if (thisType != neighborType) {
-				return false;
-			}
-		}
-		
-		// Check east
-		if (x < board.length - 1 && board[x+1][y] != null) {
-			isNeighbor = true;
-			QuadrantType thisType = tile.getQuadrants()[Tile.EAST].getType();
-			QuadrantType neighborType = board[x+1][y].getQuadrants()[Tile.WEST].getType();
-			if (thisType != neighborType) {
-				return false;
-			}
-		}
-		
-		// Check south
-		if (y < board[0].length - 1 && board[x][y+1] != null) {
-			isNeighbor = true;
-			QuadrantType thisType = tile.getQuadrants()[Tile.SOUTH].getType();
-			QuadrantType neighborType = board[x][y+1].getQuadrants()[Tile.NORTH].getType();
-			if (thisType != neighborType) {
-				return false;
-			}
-		}
-		
-		// Check west
-		if (x > 0 && board[x-1][y] != null) {
-			isNeighbor = true;
-			QuadrantType thisType = tile.getQuadrants()[Tile.WEST].getType();
-			QuadrantType neighborType = board[x-1][y].getQuadrants()[Tile.EAST].getType();
-			if (thisType != neighborType) {
-				return false;
-			}
-		}
-		
-		// See if there were any neighbors at all
-		if (!isNeighbor)
-			return false;
-		
-		// It passed all the tests!
-		return true;
-	}
-	
-	public void placeTile(int x, int y, Tile tile) {
-		if (!isMoveValid(x, y, tile)) {
-			throw new InvalidMoveException("Tile " + tile + " at (" + x + "," + y + ")");
-		}
-		board[x][y] = tile;
-		// TODO Do all the other tile placing business!
 	}
 	
 	public String toString() {
