@@ -21,6 +21,12 @@ public class Tile {
 	public Quadrant[] getQuadrants() {
 		return quadrants;
 	}
+	
+	public Quadrant getQuadrant(int side) {
+		if (side < 0 || side > 3)
+			throw new IllegalArgumentException(side + ": quadrant index must be from 0 to 3. (Use Tile.NORTH, etc. to avoid this error.)");
+		return quadrants[side];
+	}
 
 	public boolean areRoadsComplete() {
 		return roadsComplete;
@@ -69,6 +75,10 @@ public class Tile {
 		quadrants[WEST] = quadrants[SOUTH];
 		quadrants[SOUTH] = quadrants[EAST];
 		quadrants[EAST] = tmp;
+	}
+	
+	public static int oppositeSide(int side) {
+		return (side + 2) % 4;
 	}
 	
 	public String toString() {
