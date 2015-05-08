@@ -1,3 +1,6 @@
+import java.util.Iterator;
+import java.util.LinkedList;
+
 
 
 public class Model {
@@ -129,6 +132,40 @@ public class Model {
 		return getNeighborQuadrant(c.getX(), c.getY(), side);
 	}
 	
+	private static OwnerType turnToOwner(TurnType player) {
+		switch (player) {
+		case RED:
+			return OwnerType.RED;
+		case BLUE:
+			return OwnerType.BLUE;
+		default:
+			return null;
+		}
+	}
+	
+	private OwnerType newOwner(LinkedList<OwnerType> owners) {
+		boolean allNone = true;
+		OwnerType newOwner = OwnerType.NONE;
+		
+		Iterator<OwnerType> itr = owners.iterator();
+		while (itr.hasNext()) {
+			OwnerType owner = itr.next();
+			if (owner != OwnerType.NONE) {
+				if (allNone) {
+					newOwner = owner;
+				} else if (owner != newOwner) {
+					newOwner = OwnerType.NONE;
+				}
+				allNone = false;
+			}
+		}
+		if (allNone) {
+			newOwner = turnToOwner(getTurn());
+		}
+		
+		return newOwner;
+	}
+	
 	public boolean isMoveValid(int x, int y, Tile tile) {
 		// Check if the indices are in bounds. If this fails then something
 		// is badly wrong and we should return an exception instead of
@@ -173,7 +210,28 @@ public class Model {
 			throw new InvalidMoveException("Tile " + tile + " at (" + x + "," + y + ")");
 		}
 		board[x][y] = tile;
+		
 		// TODO Do all the other tile placing business!
+		LinkedList<OwnerType> neighborRoadOwners = new LinkedList<OwnerType>();
+		LinkedList<OwnerType> neighborCityOwners = new LinkedList<OwnerType>();
+		for (int side = 0; side < 4; side++) {
+			Quadrant neighborQ = getNeighborQuadrant(x, y, side);
+			if (neighborQ != null) {
+				if (neighborQ.getType() == QuadrantType.ROAD) {
+					neighborRoadOwners.add(neighborQ.getOwner());
+				} else if (neighborQ.getType() == QuadrantType.CITY) {
+					neighborCityOwners.add(neighborQ.getOwner());
+				}
+			}
+		}
+		OwnerType roadOwner = newOwner(neighborRoadOwners);
+		OwnerType cityOwner = newOwner(neighborCityOwners);
+		System.out.println("roadOwner: " + roadOwner);
+		System.out.println("cityOwner: " + cityOwner);
+		
+		// TODO Propagate out, setting ownership
+		
+		nextTurn();
 	}
 	
 	public void placeTile(Coordinate c, Tile tile) {
