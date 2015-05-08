@@ -16,14 +16,16 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private Model model;
 	
+	private static final int BOARD_SIZE = 5;
+	
 	private GUI() {
-		model = new Model(3);
+		model = new Model(BOARD_SIZE);
 		
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(3,3));
+		mainPanel.setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
 		
-		for (int y = 0; y < 3; y++) {
-			for (int x = 0; x < 3; x++) {
+		for (int y = 0; y < BOARD_SIZE; y++) {
+			for (int x = 0; x < BOARD_SIZE; x++) {
 				TileButton newButton = new TileButton(x, y, model.getTile(x, y));
 				newButton.addActionListener(this);
 				mainPanel.add(newButton);
