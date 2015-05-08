@@ -51,13 +51,17 @@ public class GUI extends JFrame implements ActionListener {
 		if (e.getSource() instanceof TileButton) {
 			// TODO Clearly this should not be random
 			TileButton theButton = (TileButton)e.getSource();
-			Tile newTile = Tile.randomTile();
-			System.out.println("Trying to add tile " + newTile);
-			if (model.isMoveValid(theButton.getGameX(), theButton.getGameY(), newTile)) {
-				model.placeTile(theButton.getGameX(), theButton.getGameY(), newTile);
-				theButton.setTile(newTile);
-				System.out.println("Tile added");
+			Tile newTile;
+			while (true) {
+				newTile = Tile.randomTile();
+				System.out.println("Trying to add tile " + newTile);
+				if (model.isMoveValid(theButton.getGameX(), theButton.getGameY(), newTile)) {
+					break;
+				}
 			}
+			model.placeTile(theButton.getGameX(), theButton.getGameY(), newTile);
+			theButton.setTile(newTile);
+			System.out.println("Tile added");
 			theButton.repaint();
 		}
 		
