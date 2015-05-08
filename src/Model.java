@@ -53,7 +53,7 @@ public class Model {
 		return redScore;
 	}
 
-	public void setRedScore(int redScore) {
+	private void setRedScore(int redScore) {
 		this.redScore = redScore;
 	}
 
