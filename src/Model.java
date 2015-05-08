@@ -69,12 +69,21 @@ public class Model {
 		this.turn = turn;
 	}
 	
+	private void nextTurn() {
+		if (getTurn() == TurnType.RED) {
+			setTurn(TurnType.BLUE);
+		} else {
+			setTurn(TurnType.RED);
+		}
+	}
+	
 	public Model(int size) {
 		if (size % 2 == 0) {
 			throw new IllegalArgumentException(size + ": The game board size must be odd so it has a middle space.");
 		}
 		board = new Tile[size][size];
 		board[size / 2][size / 2] = Tile.randomTile();
+		setTurn(TurnType.RED);
 	}
 	
 	private Coordinate getNextTileCoordinates(int x, int y, int side) {
