@@ -20,8 +20,22 @@ public class TileButton extends JButton {
 	
 	private int y;
 	
-	void setTile(Tile tile) {
+	public void setTile(Tile tile) {
 		this.tile = tile;
+		update();
+	}
+	
+	public TileButton(int x, int y, Tile tile) {
+		this.x = x;
+		this.y = y;
+		
+		this.setBackground(Color.MAGENTA);
+		this.setLayout(new BorderLayout());
+		this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		setTile(tile);
+	}
+	
+	public void update() {
 		removeAll();
 		
 		if (tile != null) {
@@ -40,16 +54,6 @@ public class TileButton extends JButton {
 		
 		validate();
 		repaint();
-	}
-	
-	public TileButton(int x, int y, Tile tile) {
-		this.x = x;
-		this.y = y;
-		
-		this.setBackground(Color.MAGENTA);
-		this.setLayout(new BorderLayout());
-		this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-		setTile(tile);
 	}
 	
 	public int getGameX() {

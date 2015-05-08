@@ -1,3 +1,4 @@
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -18,10 +19,12 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private static final int BOARD_SIZE = 5;
 	
+	private JPanel mainPanel;
+	
 	private GUI() {
 		model = new Model(BOARD_SIZE);
 		
-		JPanel mainPanel = new JPanel();
+		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
 		
 		for (int y = 0; y < BOARD_SIZE; y++) {
@@ -44,6 +47,15 @@ public class GUI extends JFrame implements ActionListener {
 		@SuppressWarnings("unused")
 		GUI gui = new GUI();
 	}
+	
+	private void updateButtons() {
+		Component[] comps = mainPanel.getComponents();
+		for (int i = 0; i < comps.length; i++) {
+			if (comps[i] instanceof TileButton) {
+				((TileButton)comps[i]).update();
+			}
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -62,7 +74,8 @@ public class GUI extends JFrame implements ActionListener {
 			model.placeTile(theButton.getGameX(), theButton.getGameY(), newTile);
 			theButton.setTile(newTile);
 			System.out.println("Tile added");
-			theButton.repaint();
+			
+			updateButtons();
 		}
 		
 	}

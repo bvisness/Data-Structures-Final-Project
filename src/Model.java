@@ -1,3 +1,4 @@
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -230,8 +231,54 @@ public class Model {
 		System.out.println("cityOwner: " + cityOwner);
 		
 		// TODO Propagate out, setting ownership
+		updateTiles(x, y, QuadrantType.ROAD, roadOwner);
+		updateTiles(x, y, QuadrantType.CITY, cityOwner);
 		
 		nextTurn();
+	}
+	
+	private void updateTiles(int x, int y, QuadrantType type, Owner owner) {
+		HashSet<Tile> set = new HashSet<Tile>();
+		
+		boolean tilesComplete = updateTilesRecursive(x, y, type, owner, set);
+		
+		System.out.println(type + " complete: " + tilesComplete);
+		
+		// TODO Update the score if stuff is complete, based on the number of things in the HashSet
+	}
+	
+	private boolean updateTilesRecursive(int x, int y, QuadrantType type, Owner owner, HashSet<Tile> set) {
+		if (!isInBounds(x, y)) {
+			return true; // Nothing to do but return that we're complete from here.
+		}
+		
+		Tile tile = getTile(x, y);
+		if (tile == null) {
+			return false; // Nothing to do but return that we've hit an incomplete spot.
+		}
+		
+		if (set.contains(tile)) {
+			return true; // We've already seen this tile, so we assume completeness.
+		}
+		
+		set.add(tile);
+		
+		boolean[] completes = new boolean[4];
+		for (int side = 0; side < 4; side++) {
+			completes[side] = true; // Assume true, even if we don't have a feature to follow
+			Quadrant thisQuadrant = tile.getQuadrant(side);
+			if (thisQuadrant.getType() == type) {
+				thisQuadrant.setOwner(owner);
+				Coordinate nextC = getNextTileCoordinates(x, y, side);
+				completes[side] = updateRoadsRecursive(nextC, type, owner, set);
+			}
+		}
+		
+		return completes[0] && completes[1] && completes[2] && completes[3];
+	}
+	
+	private boolean updateRoadsRecursive(Coordinate c, QuadrantType type, Owner owner, HashSet<Tile> set) {
+		return updateTilesRecursive(c.getX(), c.getY(), type, owner, set);
 	}
 	
 	public void placeTile(Coordinate c, Tile tile) {
