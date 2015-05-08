@@ -108,6 +108,61 @@ public class Model {
 		return isInBounds(c.getX(), c.getY());
 	}
 	
+	public boolean isMoveValid(int x, int y, Tile tile) {
+		// Check if the indices are in bounds. If this fails then something
+		// is badly wrong and we should return an exception instead of
+		// returning false.
+		if (!isInBounds(x, y)) {
+			throw new ArrayIndexOutOfBoundsException("(" + x + "," + y + "): outside the game board");
+		}
+		
+		// Check if there is already a tile where we are trying to place.
+		if (getTile(x, y) != null) {
+			return false;
+		}
+		
+		// Check all neighboring tiles to see if the Quadrants match up.
+		boolean hasNeighbor = false;
+		for (int side = 0; side < 4; side++) {
+			Coordinate neighborC = getNextTileCoordinates(x, y, side);
+			
+			if (isInBounds(neighborC) && getTile(neighborC) != null) {
+				hasNeighbor = true;
+				Tile neighbor = getTile(neighborC);
+				
+				Quadrant thisQuadrant = tile.getQuadrant(side);
+				Quadrant neighborQuadrant = neighbor.getQuadrant(Tile.oppositeSide(side));
+				if (thisQuadrant.getType() != neighborQuadrant.getType()) {
+					return false;
+				}
+			}
+		}
+		
+		// Check if there were any adjacent tiles at all.
+		if (!hasNeighbor) {
+			return false;
+		}
+		
+		// We passed all the tests!
+		return true;		
+	}
+	
+	public boolean isMoveValid(Coordinate c, Tile tile) {
+		return isMoveValid(c.getX(), c.getY(), tile);
+	}
+	
+	public void placeTile(int x, int y, Tile tile) {
+		if (!isMoveValid(x, y, tile)) {
+			throw new InvalidMoveException("Tile " + tile + " at (" + x + "," + y + ")");
+		}
+		board[x][y] = tile;
+		// TODO Do all the other tile placing business!
+	}
+	
+	public void placeTile(Coordinate c, Tile tile) {
+		placeTile(c.getX(), c.getY(), tile);
+	}
+	
 	public String toString() {
 		String result = "";
 		for (int y = 0; y < board[0].length; y++) {
