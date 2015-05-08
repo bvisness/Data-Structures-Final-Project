@@ -116,6 +116,19 @@ public class Model {
 		return isInBounds(c.getX(), c.getY());
 	}
 	
+	private Quadrant getNeighborQuadrant(int x, int y, int side) {
+		Coordinate neighborC = getNextTileCoordinates(x, y, side);
+		if (isInBounds(neighborC) && getTile(neighborC) != null) {
+			return getTile(neighborC).getQuadrant(Tile.oppositeSide(side));
+		} else {
+			return null;
+		}
+	}
+	
+	private Quadrant getNeighborQuadrant(Coordinate c, int side) {
+		return getNeighborQuadrant(c.getX(), c.getY(), side);
+	}
+	
 	public boolean isMoveValid(int x, int y, Tile tile) {
 		// Check if the indices are in bounds. If this fails then something
 		// is badly wrong and we should return an exception instead of
@@ -132,14 +145,10 @@ public class Model {
 		// Check all neighboring tiles to see if the Quadrants match up.
 		boolean hasNeighbor = false;
 		for (int side = 0; side < 4; side++) {
-			Coordinate neighborC = getNextTileCoordinates(x, y, side);
-			
-			if (isInBounds(neighborC) && getTile(neighborC) != null) {
+			Quadrant thisQuadrant = tile.getQuadrant(side);
+			Quadrant neighborQuadrant = getNeighborQuadrant(x, y, side);
+			if (neighborQuadrant != null) {
 				hasNeighbor = true;
-				Tile neighbor = getTile(neighborC);
-				
-				Quadrant thisQuadrant = tile.getQuadrant(side);
-				Quadrant neighborQuadrant = neighbor.getQuadrant(Tile.oppositeSide(side));
 				if (thisQuadrant.getType() != neighborQuadrant.getType()) {
 					return false;
 				}
