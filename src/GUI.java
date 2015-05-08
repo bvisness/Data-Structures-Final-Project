@@ -1,9 +1,12 @@
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -17,26 +20,52 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private Model model;
 	
+	private Tile nextTile;
+	
 	private static final int BOARD_SIZE = 5;
 	
-	private JPanel mainPanel;
+	private JPanel boardPanel;
+	
+	private JPanel inputPanel;
+	
+	private TileButton nextTileButton;
+	
+	private JButton rotateRightButton;
+	
+	private JButton rotateLeftButton;
 	
 	private GUI() {
 		model = new Model(BOARD_SIZE);
 		
-		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
+		boardPanel = new JPanel(new GridLayout(BOARD_SIZE, BOARD_SIZE));
 		
 		for (int y = 0; y < BOARD_SIZE; y++) {
 			for (int x = 0; x < BOARD_SIZE; x++) {
 				TileButton newButton = new TileButton(x, y, model.getTile(x, y));
 				newButton.addActionListener(this);
-				mainPanel.add(newButton);
+				boardPanel.add(newButton);
 			}
 		}
 		
-		this.getContentPane().add(mainPanel);
-		this.setPreferredSize(new Dimension(400,400));
+		inputPanel = new JPanel();
+		inputPanel.setLayout(new FlowLayout());
+		
+		nextTile = Tile.randomTile();
+		nextTileButton = new TileButton(-1, -1, nextTile);
+		nextTileButton.setEnabled(false);
+		inputPanel.add(nextTileButton);
+		
+		rotateLeftButton = new JButton("Rotate Left");
+		rotateLeftButton.addActionListener(this);
+		rotateRightButton = new JButton("Rotate Right");
+		rotateRightButton.addActionListener(this);
+		inputPanel.add(rotateLeftButton);
+		inputPanel.add(rotateRightButton);
+		
+		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
+		this.getContentPane().add(boardPanel);
+		this.getContentPane().add(inputPanel);
+		this.setPreferredSize(new Dimension(800,400));
 		
 		pack();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -49,7 +78,7 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	private void updateButtons() {
-		Component[] comps = mainPanel.getComponents();
+		Component[] comps = boardPanel.getComponents();
 		for (int i = 0; i < comps.length; i++) {
 			if (comps[i] instanceof TileButton) {
 				((TileButton)comps[i]).update();
@@ -60,20 +89,22 @@ public class GUI extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		if (e.getSource() instanceof TileButton) {
-			// TODO Clearly this should not be random
+		if (e.getSource() == rotateLeftButton) {
+			nextTile.rotateLeft();
+			nextTileButton.update();
+		} else if (e.getSource() == rotateRightButton) {
+			nextTile.rotateRight();
+			nextTileButton.update();
+		} else if (e.getSource() instanceof TileButton) {
 			TileButton theButton = (TileButton)e.getSource();
-			Tile newTile;
-			while (true) {
-				newTile = Tile.randomTile();
-				System.out.println("Trying to add tile " + newTile);
-				if (model.isMoveValid(theButton.getGameX(), theButton.getGameY(), newTile)) {
-					break;
-				}
+			if (model.isMoveValid(theButton.getGameX(), theButton.getGameY(), nextTile)) {
+				model.placeTile(theButton.getGameX(), theButton.getGameY(), nextTile);
+				theButton.setTile(nextTile);
+				System.out.println("Tile added");
+				
+				nextTile = Tile.randomTile();
+				nextTileButton.setTile(nextTile);
 			}
-			model.placeTile(theButton.getGameX(), theButton.getGameY(), newTile);
-			theButton.setTile(newTile);
-			System.out.println("Tile added");
 			
 			updateButtons();
 		}
