@@ -35,11 +35,10 @@ public class Model {
 	}
 	
 	public Tile getTile(int x, int y) {
-		try {
-			return board[x][y];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new ArrayIndexOutOfBoundsException("(" + x + "," + y + "): outside the game board");
+		if (!isInBounds(x, y)) {
+			return null;
 		}
+		return board[x][y];
 	}
 	
 	public Tile getTile(Coordinate c) {
