@@ -5,7 +5,7 @@ public class Quadrant {
 	
 	private QuadrantType type;
 	
-	private OwnerType owner;
+	private Owner owner;
 
 	public QuadrantType getType() {
 		return type;
@@ -15,17 +15,17 @@ public class Quadrant {
 		this.type = type;
 	}
 
-	public OwnerType getOwner() {
+	public Owner getOwner() {
 		return owner;
 	}
 
-	public void setOwner(OwnerType owner) {
+	public void setOwner(Owner owner) {
 		this.owner = owner;
 	}
 	
 	public Quadrant() {
 		type = QuadrantType.GRASS;
-		owner = OwnerType.NONE;
+		owner = Owner.NONE;
 	}
 	
 	public String toString() {

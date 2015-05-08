@@ -14,9 +14,9 @@ public class Model {
 	
 	private int blueScore;
 	
-	public enum TurnType { RED, BLUE };
+	public enum Turn { RED, BLUE };
 	
-	private TurnType turn;
+	private Turn turn;
 	
 	private class Coordinate {
 		private final int x;
@@ -64,19 +64,19 @@ public class Model {
 		this.blueScore = blueScore;
 	}
 
-	public TurnType getTurn() {
+	public Turn getTurn() {
 		return turn;
 	}
 
-	private void setTurn(TurnType turn) {
+	private void setTurn(Turn turn) {
 		this.turn = turn;
 	}
 	
 	private void nextTurn() {
-		if (getTurn() == TurnType.RED) {
-			setTurn(TurnType.BLUE);
+		if (getTurn() == Turn.RED) {
+			setTurn(Turn.BLUE);
 		} else {
-			setTurn(TurnType.RED);
+			setTurn(Turn.RED);
 		}
 	}
 	
@@ -86,7 +86,7 @@ public class Model {
 		}
 		board = new Tile[size][size];
 		board[size / 2][size / 2] = Tile.randomTile();
-		setTurn(TurnType.RED);
+		setTurn(Turn.RED);
 	}
 	
 	private Coordinate getNextTileCoordinates(int x, int y, int side) {
@@ -132,29 +132,29 @@ public class Model {
 		return getNeighborQuadrant(c.getX(), c.getY(), side);
 	}
 	
-	private static OwnerType turnToOwner(TurnType player) {
+	private static Owner turnToOwner(Turn player) {
 		switch (player) {
 		case RED:
-			return OwnerType.RED;
+			return Owner.RED;
 		case BLUE:
-			return OwnerType.BLUE;
+			return Owner.BLUE;
 		default:
 			return null;
 		}
 	}
 	
-	private OwnerType newOwner(LinkedList<OwnerType> owners) {
+	private Owner newOwner(LinkedList<Owner> owners) {
 		boolean allNone = true;
-		OwnerType newOwner = OwnerType.NONE;
+		Owner newOwner = Owner.NONE;
 		
-		Iterator<OwnerType> itr = owners.iterator();
+		Iterator<Owner> itr = owners.iterator();
 		while (itr.hasNext()) {
-			OwnerType owner = itr.next();
-			if (owner != OwnerType.NONE) {
+			Owner owner = itr.next();
+			if (owner != Owner.NONE) {
 				if (allNone) {
 					newOwner = owner;
 				} else if (owner != newOwner) {
-					newOwner = OwnerType.NONE;
+					newOwner = Owner.NONE;
 				}
 				allNone = false;
 			}
@@ -212,8 +212,8 @@ public class Model {
 		board[x][y] = tile;
 		
 		// TODO Do all the other tile placing business!
-		LinkedList<OwnerType> neighborRoadOwners = new LinkedList<OwnerType>();
-		LinkedList<OwnerType> neighborCityOwners = new LinkedList<OwnerType>();
+		LinkedList<Owner> neighborRoadOwners = new LinkedList<Owner>();
+		LinkedList<Owner> neighborCityOwners = new LinkedList<Owner>();
 		for (int side = 0; side < 4; side++) {
 			Quadrant neighborQ = getNeighborQuadrant(x, y, side);
 			if (neighborQ != null) {
@@ -224,8 +224,8 @@ public class Model {
 				}
 			}
 		}
-		OwnerType roadOwner = newOwner(neighborRoadOwners);
-		OwnerType cityOwner = newOwner(neighborCityOwners);
+		Owner roadOwner = newOwner(neighborRoadOwners);
+		Owner cityOwner = newOwner(neighborCityOwners);
 		System.out.println("roadOwner: " + roadOwner);
 		System.out.println("cityOwner: " + cityOwner);
 		
