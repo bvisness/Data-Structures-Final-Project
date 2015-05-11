@@ -62,16 +62,12 @@ public class Model {
 	public Turn getTurn() {
 		return turn;
 	}
-
-	private void setTurn(Turn turn) {
-		this.turn = turn;
-	}
 	
 	private void nextTurn() {
 		if (getTurn() == Turn.RED) {
-			setTurn(Turn.BLUE);
+			turn = Turn.BLUE;
 		} else {
-			setTurn(Turn.RED);
+			turn = Turn.RED;
 		}
 	}
 	
@@ -85,7 +81,7 @@ public class Model {
 		}
 		board = new Tile[size][size];
 		board[size / 2][size / 2] = Tile.randomTile();
-		setTurn(Turn.RED);
+		turn = Turn.RED;
 		tilesPlaced = 1;
 	}
 	
