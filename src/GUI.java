@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -68,7 +69,9 @@ public class GUI extends JFrame implements ActionListener {
 		inputPanel.add(rotateRightButton);
 		
 		redScoreLabel = new JLabel("0");
+		redScoreLabel.setForeground(Color.RED);
 		blueScoreLabel = new JLabel("0");
+		blueScoreLabel.setForeground(Color.BLUE);
 		inputPanel.add(redScoreLabel);
 		inputPanel.add(blueScoreLabel);
 		
