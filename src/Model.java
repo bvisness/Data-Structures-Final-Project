@@ -15,6 +15,8 @@ public class Model {
 	
 	private int blueScore;
 	
+	private int tilesPlaced;
+	
 	public enum Turn { RED, BLUE };
 	
 	private Turn turn;
@@ -73,6 +75,10 @@ public class Model {
 		}
 	}
 	
+	public boolean isGameOver() {
+		return tilesPlaced >= board.length * board.length;
+	}
+	
 	public Model(int size) {
 		if (size % 2 == 0) {
 			throw new IllegalArgumentException(size + ": The game board size must be odd so it has a middle space.");
@@ -80,6 +86,7 @@ public class Model {
 		board = new Tile[size][size];
 		board[size / 2][size / 2] = Tile.randomTile();
 		setTurn(Turn.RED);
+		tilesPlaced = 1;
 	}
 	
 	private Coordinate getNextTileCoordinates(int x, int y, int side) {
@@ -224,6 +231,7 @@ public class Model {
 		updateTiles(x, y, QuadrantType.ROAD, roadOwner);
 		updateTiles(x, y, QuadrantType.CITY, cityOwner);
 		
+		tilesPlaced++;
 		nextTurn();
 	}
 	
@@ -289,6 +297,34 @@ public class Model {
 	
 	public void placeTile(Coordinate c, Tile tile) {
 		placeTile(c.getX(), c.getY(), tile);
+	}
+	
+	public Tile randomLegalTile() {
+		if (isGameOver()) {
+			return null;
+		}
+		
+		Tile newTile = null;
+		boolean isLegal = false;
+		while (!isLegal) {
+			newTile = Tile.randomTile();
+			for (int x = 0; x < board.length; x++) {
+				for (int y = 0; y < board[0].length; y++) {
+					if (getTile(x, y) == null) {
+						for (int i = 0; i < 4; i++) {
+							if (isMoveValid(x, y, newTile)) {
+								isLegal = true;
+							}
+							newTile.rotateRight();
+						}
+						if (isLegal) {
+							return newTile;
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 	
 	public String toString() {

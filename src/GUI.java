@@ -120,7 +120,7 @@ public class GUI extends JFrame implements ActionListener {
 				theButton.setTile(nextTile);
 				System.out.println("Tile added");
 				
-				nextTile = Tile.randomTile();
+				nextTile = model.randomLegalTile();
 				nextTileButton.setTile(nextTile);
 			}
 			
