@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
@@ -33,6 +34,10 @@ public class GUI extends JFrame implements ActionListener {
 	private JButton rotateRightButton;
 	
 	private JButton rotateLeftButton;
+	
+	private JLabel redScoreLabel;
+	
+	private JLabel blueScoreLabel;
 	
 	private GUI() {
 		model = new Model(BOARD_SIZE);
@@ -62,6 +67,11 @@ public class GUI extends JFrame implements ActionListener {
 		inputPanel.add(rotateLeftButton);
 		inputPanel.add(rotateRightButton);
 		
+		redScoreLabel = new JLabel("0");
+		blueScoreLabel = new JLabel("0");
+		inputPanel.add(redScoreLabel);
+		inputPanel.add(blueScoreLabel);
+		
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 		this.getContentPane().add(boardPanel);
 		this.getContentPane().add(inputPanel);
@@ -77,13 +87,18 @@ public class GUI extends JFrame implements ActionListener {
 		GUI gui = new GUI();
 	}
 	
-	private void updateButtons() {
+	private void update() {
+		// Update buttons
 		Component[] comps = boardPanel.getComponents();
 		for (int i = 0; i < comps.length; i++) {
 			if (comps[i] instanceof TileButton) {
 				((TileButton)comps[i]).update();
 			}
 		}
+		
+		// Update scores
+		redScoreLabel.setText(model.getRedScore() + "");
+		blueScoreLabel.setText(model.getBlueScore() + "");
 	}
 
 	@Override
@@ -106,7 +121,7 @@ public class GUI extends JFrame implements ActionListener {
 				nextTileButton.setTile(nextTile);
 			}
 			
-			updateButtons();
+			update();
 		}
 		
 	}

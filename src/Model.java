@@ -53,16 +53,8 @@ public class Model {
 		return redScore;
 	}
 
-	private void setRedScore(int redScore) {
-		this.redScore = redScore;
-	}
-
 	public int getBlueScore() {
 		return blueScore;
-	}
-
-	private void setBlueScore(int blueScore) {
-		this.blueScore = blueScore;
 	}
 
 	public Turn getTurn() {
@@ -212,7 +204,6 @@ public class Model {
 		}
 		board[x][y] = tile;
 		
-		// TODO Do all the other tile placing business!
 		LinkedList<Owner> neighborRoadOwners = new LinkedList<Owner>();
 		LinkedList<Owner> neighborCityOwners = new LinkedList<Owner>();
 		for (int side = 0; side < 4; side++) {
@@ -230,7 +221,6 @@ public class Model {
 		System.out.println("roadOwner: " + roadOwner);
 		System.out.println("cityOwner: " + cityOwner);
 		
-		// TODO Propagate out, setting ownership
 		updateTiles(x, y, QuadrantType.ROAD, roadOwner);
 		updateTiles(x, y, QuadrantType.CITY, cityOwner);
 		
@@ -244,7 +234,19 @@ public class Model {
 		
 		System.out.println(type + " complete: " + tilesComplete);
 		
-		// TODO Update the score if stuff is complete, based on the number of things in the HashSet
+		if (tilesComplete) {
+			int scoredTiles = set.size(); // The number of tiles we visited is the number of tiles that scored
+			switch (owner) {
+			case RED:
+				redScore += scoredTiles;
+				break;
+			case BLUE:
+				blueScore += scoredTiles;
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	private boolean updateTilesRecursive(int x, int y, QuadrantType type, Owner owner, HashSet<Tile> set) {
@@ -255,6 +257,10 @@ public class Model {
 		Tile tile = getTile(x, y);
 		if (tile == null) {
 			return false; // Nothing to do but return that we've hit an incomplete spot.
+		}
+		if (!tile.hasQuadrantType(type)) {
+			return false; // The feature we want is nowhere on this tile.
+						  // This can only happen if this is the first tile we check.
 		}
 		
 		if (set.contains(tile)) {

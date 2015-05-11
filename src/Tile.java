@@ -27,6 +27,17 @@ public class Tile {
 			throw new IllegalArgumentException(side + ": quadrant index must be from 0 to 3. (Use Tile.NORTH, etc. to avoid this error.)");
 		return quadrants[side];
 	}
+	
+	public boolean hasQuadrantType(QuadrantType type) {
+		boolean hasType = false;
+		for (int side = 0; side < 4; side++) {
+			if (getQuadrant(side).getType() == type) {
+				hasType = true;
+				break;
+			}
+		}
+		return hasType;
+	}
 
 	public boolean areRoadsComplete() {
 		return roadsComplete;
