@@ -21,6 +21,10 @@ public class GUI extends JFrame implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private static final int BOARD_WIDTH = 750;
+	
+	private static final int INPUT_WIDTH = 250;
+	
 	private Model model;
 	
 	private Tile nextTile;
@@ -50,11 +54,11 @@ public class GUI extends JFrame implements ActionListener {
 		
 		boardPanel = new JPanel(new GridLayout(1,1));
 		boardPanel.add(boardPanelWithSize(boardSize));
-		boardPanel.setPreferredSize(new Dimension(750, 750));
+		boardPanel.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_WIDTH));
 		
 		inputPanel = new JPanel();
 		inputPanel.setLayout(new FlowLayout());
-		inputPanel.setPreferredSize(new Dimension(250, 750));
+		inputPanel.setPreferredSize(new Dimension(INPUT_WIDTH, BOARD_WIDTH));
 		
 		nextTile = Tile.randomTile();
 		nextTileButton = new TileButton(-1, -1, nextTile);
@@ -86,7 +90,7 @@ public class GUI extends JFrame implements ActionListener {
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 		this.getContentPane().add(boardPanel);
 		this.getContentPane().add(inputPanel);
-		this.setPreferredSize(new Dimension(1000,750));
+		this.setPreferredSize(new Dimension(BOARD_WIDTH + INPUT_WIDTH,BOARD_WIDTH));
 		
 		pack();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
