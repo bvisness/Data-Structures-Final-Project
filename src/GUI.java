@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -41,6 +42,10 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private JButton rotateLeftButton;
 	
+	private JPanel redTurnIndicator;
+	
+	private JPanel blueTurnIndicator;
+	
 	private JLabel redScoreLabel;
 	
 	private JLabel blueScoreLabel;
@@ -48,7 +53,7 @@ public class GUI extends JFrame implements ActionListener {
 	private JComboBox<String> boardSizeSelector;
 	
 	private GUI() {
-		boardSize = 3;
+		boardSize = 5;
 		
 		model = new Model(boardSize);
 		
@@ -56,46 +61,71 @@ public class GUI extends JFrame implements ActionListener {
 		boardPanel.add(boardPanelWithSize(boardSize));
 		boardPanel.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_WIDTH));
 		
-		inputPanel = new JPanel();
-		inputPanel.setLayout(new FlowLayout());
-		inputPanel.setPreferredSize(new Dimension(INPUT_WIDTH, BOARD_WIDTH));
-		
-		nextTile = Tile.randomTile();
+		// Build the new tile panel
+		JPanel tilePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		nextTile = model.randomLegalTile();
 		nextTileButton = new TileButton(-1, -1, nextTile);
 		nextTileButton.setEnabled(false);
-		inputPanel.add(nextTileButton);
-		
-		rotateLeftButton = new JButton("Rotate Left");
+		rotateLeftButton = new JButton("RL");
 		rotateLeftButton.addActionListener(this);
-		rotateRightButton = new JButton("Rotate Right");
+		rotateRightButton = new JButton("RR");
 		rotateRightButton.addActionListener(this);
-		inputPanel.add(rotateLeftButton);
-		inputPanel.add(rotateRightButton);
+		tilePanel.add(rotateLeftButton);
+		tilePanel.add(nextTileButton);
+		tilePanel.add(rotateRightButton);
 		
-		redScoreLabel = new JLabel("0");
-		redScoreLabel.setForeground(Color.RED);
-		blueScoreLabel = new JLabel("0");
-		blueScoreLabel.setForeground(Color.BLUE);
-		inputPanel.add(redScoreLabel);
-		inputPanel.add(blueScoreLabel);
+		// Build the score panel
+		JPanel scorePanel = new JPanel();
+		JPanel scoreMarkersPanel = new JPanel(new GridLayout(1,2));
+		redTurnIndicator = new JPanel();
+		redTurnIndicator.setOpaque(true);
+		redTurnIndicator.setBackground(Color.RED);
+		blueTurnIndicator = new JPanel();
+		blueTurnIndicator.setOpaque(true);
+		blueTurnIndicator.setBackground(Color.BLUE);
+		scoreMarkersPanel.add(redTurnIndicator);
+		scoreMarkersPanel.add(blueTurnIndicator);
+		JPanel scoresPanel = new JPanel(new GridLayout(1,2));
+		scoresPanel.setPreferredSize(new Dimension(INPUT_WIDTH, INPUT_WIDTH / 2));
+		redScoreLabel = new JLabel("0", JLabel.CENTER);
+		redScoreLabel.setOpaque(true);
+		redScoreLabel.setBackground(Color.RED);
+		blueScoreLabel = new JLabel("0", JLabel.CENTER);
+		blueScoreLabel.setOpaque(true);
+		blueScoreLabel.setBackground(Color.BLUE);
+		scoresPanel.add(redScoreLabel);
+		scoresPanel.add(blueScoreLabel);
+		scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
+		scorePanel.add(scoreMarkersPanel);
+		scorePanel.add(scoresPanel);
 		
+		JPanel optionsPanel = new JPanel(new GridLayout(1,1));
 		boardSizeSelector = new JComboBox<String>();
 		boardSizeSelector.addItem("3 x 3");
 		boardSizeSelector.addItem("5 x 5");
 		boardSizeSelector.addItem("9 x 9");
 		boardSizeSelector.addItem("15 x 15");
+		boardSizeSelector.setSelectedIndex(1);
 		boardSizeSelector.addActionListener(this);
-		inputPanel.add(boardSizeSelector);
+		optionsPanel.add(boardSizeSelector);
+		
+		inputPanel = new JPanel();
+		inputPanel.setLayout(new BorderLayout());
+		inputPanel.add(optionsPanel, BorderLayout.NORTH);
+		inputPanel.add(tilePanel, BorderLayout.CENTER);
+		inputPanel.add(scorePanel, BorderLayout.SOUTH);
+		inputPanel.setPreferredSize(new Dimension(INPUT_WIDTH, BOARD_WIDTH));
 		
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 		this.getContentPane().add(boardPanel);
 		this.getContentPane().add(inputPanel);
-		this.setPreferredSize(new Dimension(BOARD_WIDTH + INPUT_WIDTH,BOARD_WIDTH));
+		this.setPreferredSize(new Dimension(BOARD_WIDTH + INPUT_WIDTH, BOARD_WIDTH));
 		
 		pack();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
+		
+		update();
 	}
 	
 	private JPanel boardPanelWithSize(int boardSize) {
@@ -124,6 +154,18 @@ public class GUI extends JFrame implements ActionListener {
 			if (comps[i] instanceof TileButton) {
 				((TileButton)comps[i]).update();
 			}
+		}
+		
+		// Update turn indicator
+		switch (model.getTurn()) {
+		case RED:
+			redTurnIndicator.setVisible(true);
+			blueTurnIndicator.setVisible(false);
+			break;
+		case BLUE:
+			redTurnIndicator.setVisible(false);
+			blueTurnIndicator.setVisible(true);
+			break;
 		}
 		
 		// Update scores
@@ -159,6 +201,7 @@ public class GUI extends JFrame implements ActionListener {
 				model = new Model(newSize);
 				boardPanel.removeAll();
 				boardPanel.add(boardPanelWithSize(newSize));
+				// TODO Make a new random tile - it's really beginning to look like this should be a method.
 				revalidate();
 				repaint();
 				update();
