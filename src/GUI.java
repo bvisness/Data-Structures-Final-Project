@@ -13,6 +13,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 
 public class GUI extends JFrame implements ActionListener {
@@ -42,6 +47,8 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private JButton rotateLeftButton;
 	
+	private JTextPane messagePane;
+	
 	private JPanel redTurnIndicator;
 	
 	private JPanel blueTurnIndicator;
@@ -56,6 +63,8 @@ public class GUI extends JFrame implements ActionListener {
 		boardPanel = new JPanel(new GridLayout(1,1));
 		boardPanel.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_WIDTH));
 		
+		JPanel centerPanel = new JPanel(new GridLayout(2,1));
+		
 		// Build the new tile panel
 		JPanel tilePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		nextTileButton = new TileButton();
@@ -67,6 +76,12 @@ public class GUI extends JFrame implements ActionListener {
 		tilePanel.add(rotateLeftButton);
 		tilePanel.add(nextTileButton);
 		tilePanel.add(rotateRightButton);
+		centerPanel.add(tilePanel);
+		
+		// Message box
+		messagePane = new JTextPane();
+		messagePane.setOpaque(false);
+		centerPanel.add(messagePane);
 		
 		// Build the score panel
 		JPanel scorePanel = new JPanel();
@@ -106,7 +121,7 @@ public class GUI extends JFrame implements ActionListener {
 		inputPanel = new JPanel();
 		inputPanel.setLayout(new BorderLayout());
 		inputPanel.add(optionsPanel, BorderLayout.NORTH);
-		inputPanel.add(tilePanel, BorderLayout.CENTER);
+		inputPanel.add(centerPanel, BorderLayout.CENTER);
 		inputPanel.add(scorePanel, BorderLayout.SOUTH);
 		inputPanel.setPreferredSize(new Dimension(INPUT_WIDTH, BOARD_WIDTH));
 		
@@ -173,9 +188,27 @@ public class GUI extends JFrame implements ActionListener {
 		redScoreLabel.setText(model.getRedScore() + "");
 		blueScoreLabel.setText(model.getBlueScore() + "");
 	}
+	
+	private void setMessage(String msg) {
+		SimpleAttributeSet font = new SimpleAttributeSet();
+		StyleConstants.setBold(font, true);
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		
+		StyledDocument doc = messagePane.getStyledDocument();
+		try {
+			doc.remove(0, doc.getLength());
+			doc.insertString(0, msg, font);
+			doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		String actionMsg = "";
 		if (e.getSource() == rotateLeftButton) {
 			nextTile.rotateLeft();
 			nextTileButton.update();
@@ -190,6 +223,8 @@ public class GUI extends JFrame implements ActionListener {
 				
 				nextTile = model.randomLegalTile();
 				nextTileButton.setTile(nextTile);
+			} else {
+				actionMsg = "You cannot place this tile there.";
 			}
 			update();
 		} else if (e.getSource() == boardSizeSelector) {
@@ -199,6 +234,7 @@ public class GUI extends JFrame implements ActionListener {
 				newGame(newSize);
 			}
 		}
+		setMessage(actionMsg);
 	}
 	
 	public static void main(String[] args) {
