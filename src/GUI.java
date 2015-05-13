@@ -61,6 +61,7 @@ public class GUI extends JFrame implements ActionListener {
 		inputPanel.setPreferredSize(new Dimension(INPUT_WIDTH, BOARD_WIDTH));
 		
 		nextTile = Tile.randomTile();
+		nextTile = model.randomLegalTile();
 		nextTileButton = new TileButton(-1, -1, nextTile);
 		nextTileButton.setEnabled(false);
 		inputPanel.add(nextTileButton);
