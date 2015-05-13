@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,7 +25,7 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private Tile nextTile;
 	
-	private static final int BOARD_SIZE = 5;
+	private int boardSize;
 	
 	private JPanel boardPanel;
 	
@@ -40,21 +41,20 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private JLabel blueScoreLabel;
 	
+	private JComboBox<String> boardSizeSelector;
+	
 	private GUI() {
-		model = new Model(BOARD_SIZE);
+		boardSize = 3;
 		
-		boardPanel = new JPanel(new GridLayout(BOARD_SIZE, BOARD_SIZE));
+		model = new Model(boardSize);
 		
-		for (int y = 0; y < BOARD_SIZE; y++) {
-			for (int x = 0; x < BOARD_SIZE; x++) {
-				TileButton newButton = new TileButton(x, y, model.getTile(x, y));
-				newButton.addActionListener(this);
-				boardPanel.add(newButton);
-			}
-		}
+		boardPanel = new JPanel(new GridLayout(1,1));
+		boardPanel.add(boardPanelWithSize(boardSize));
+		boardPanel.setPreferredSize(new Dimension(750, 750));
 		
 		inputPanel = new JPanel();
 		inputPanel.setLayout(new FlowLayout());
+		inputPanel.setPreferredSize(new Dimension(250, 750));
 		
 		nextTile = Tile.randomTile();
 		nextTileButton = new TileButton(-1, -1, nextTile);
@@ -75,14 +75,36 @@ public class GUI extends JFrame implements ActionListener {
 		inputPanel.add(redScoreLabel);
 		inputPanel.add(blueScoreLabel);
 		
+		boardSizeSelector = new JComboBox<String>();
+		boardSizeSelector.addItem("3 x 3");
+		boardSizeSelector.addItem("5 x 5");
+		boardSizeSelector.addItem("9 x 9");
+		boardSizeSelector.addItem("15 x 15");
+		boardSizeSelector.addActionListener(this);
+		inputPanel.add(boardSizeSelector);
+		
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 		this.getContentPane().add(boardPanel);
 		this.getContentPane().add(inputPanel);
-		this.setPreferredSize(new Dimension(800,400));
+		this.setPreferredSize(new Dimension(1000,750));
 		
 		pack();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
+	}
+	
+	private JPanel boardPanelWithSize(int boardSize) {
+		JPanel newPanel = new JPanel(new GridLayout(boardSize, boardSize));
+		
+		for (int y = 0; y < boardSize; y++) {
+			for (int x = 0; x < boardSize; x++) {
+				TileButton newButton = new TileButton(x, y, model.getTile(x, y));
+				newButton.addActionListener(this);
+				newPanel.add(newButton);
+			}
+		}
+		
+		return newPanel;
 	}
 	
 	public static void main(String[] args) {
@@ -124,6 +146,18 @@ public class GUI extends JFrame implements ActionListener {
 			}
 			
 			update();
+		} else if (e.getSource() == boardSizeSelector) {
+			String newValue = (String)boardSizeSelector.getSelectedItem();
+			int newSize = Integer.parseInt(newValue.split(" ")[0]);
+			if (newSize != boardSize) {
+				boardSize = newSize;
+				model = new Model(newSize);
+				boardPanel.removeAll();
+				boardPanel.add(boardPanelWithSize(newSize));
+				revalidate();
+				repaint();
+				update();
+			}
 		}
 		
 	}
