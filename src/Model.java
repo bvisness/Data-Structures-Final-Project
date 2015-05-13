@@ -221,8 +221,6 @@ public class Model {
 		}
 		Owner roadOwner = newOwner(neighborRoadOwners);
 		Owner cityOwner = newOwner(neighborCityOwners);
-		System.out.println("roadOwner: " + roadOwner);
-		System.out.println("cityOwner: " + cityOwner);
 		
 		updateTiles(x, y, QuadrantType.ROAD, roadOwner);
 		updateTiles(x, y, QuadrantType.CITY, cityOwner);
@@ -235,8 +233,6 @@ public class Model {
 		HashSet<Tile> set = new HashSet<Tile>();
 		
 		boolean tilesComplete = updateTilesRecursive(x, y, type, owner, set);
-		
-		System.out.println(type + " complete: " + tilesComplete);
 		
 		if (tilesComplete) {
 			int scoredTiles = set.size(); // The number of tiles we visited is the number of tiles that scored

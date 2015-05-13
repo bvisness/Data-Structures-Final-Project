@@ -118,7 +118,6 @@ public class GUI extends JFrame implements ActionListener {
 			if (model.isMoveValid(theButton.getGameX(), theButton.getGameY(), nextTile)) {
 				model.placeTile(theButton.getGameX(), theButton.getGameY(), nextTile);
 				theButton.setTile(nextTile);
-				System.out.println("Tile added");
 				
 				nextTile = model.randomLegalTile();
 				nextTileButton.setTile(nextTile);
