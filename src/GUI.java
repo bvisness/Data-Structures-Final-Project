@@ -96,11 +96,9 @@ public class GUI extends JFrame implements ActionListener {
 		scoreMarkersPanel.add(blueTurnIndicator);
 		JPanel scoresPanel = new JPanel(new GridLayout(1,2));
 		scoresPanel.setPreferredSize(new Dimension(INPUT_WIDTH, INPUT_WIDTH / 2));
-		redScoreLabel = new JLabel("0", JLabel.CENTER);
-		redScoreLabel.setOpaque(true);
+		redScoreLabel = new ScoreLabel("0");
 		redScoreLabel.setBackground(Color.RED);
-		blueScoreLabel = new JLabel("0", JLabel.CENTER);
-		blueScoreLabel.setOpaque(true);
+		blueScoreLabel = new ScoreLabel("0");
 		blueScoreLabel.setBackground(Color.BLUE);
 		scoresPanel.add(redScoreLabel);
 		scoresPanel.add(blueScoreLabel);
