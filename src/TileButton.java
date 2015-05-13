@@ -25,6 +25,10 @@ public class TileButton extends JButton {
 		update();
 	}
 	
+	public TileButton() {
+		this(-1, -1, null);
+	}
+	
 	public TileButton(int x, int y, Tile tile) {
 		this.x = x;
 		this.y = y;

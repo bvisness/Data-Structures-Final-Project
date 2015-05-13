@@ -52,19 +52,13 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private JComboBox<String> boardSizeSelector;
 	
-	private GUI() {
-		boardSize = 5;
-		
-		model = new Model(boardSize);
-		
+	private GUI() {		
 		boardPanel = new JPanel(new GridLayout(1,1));
-		boardPanel.add(boardPanelWithSize(boardSize));
 		boardPanel.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_WIDTH));
 		
 		// Build the new tile panel
 		JPanel tilePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		nextTile = model.randomLegalTile();
-		nextTileButton = new TileButton(-1, -1, nextTile);
+		nextTileButton = new TileButton();
 		nextTileButton.setEnabled(false);
 		rotateLeftButton = new JButton("RL");
 		rotateLeftButton.addActionListener(this);
@@ -121,11 +115,23 @@ public class GUI extends JFrame implements ActionListener {
 		this.getContentPane().add(inputPanel);
 		this.setPreferredSize(new Dimension(BOARD_WIDTH + INPUT_WIDTH, BOARD_WIDTH));
 		
+		newGame(5);
+		update();
+		
 		pack();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
-		
+	}
+	
+	private void newGame(int boardSize) {
+		this.boardSize = boardSize;
+		model = new Model(boardSize);
+		boardPanel.removeAll();
+		boardPanel.add(boardPanelWithSize(boardSize));
+		nextTile = model.randomLegalTile();
+		nextTileButton.setTile(nextTile);
 		update();
+		revalidate();
 	}
 	
 	private JPanel boardPanelWithSize(int boardSize) {
@@ -142,14 +148,9 @@ public class GUI extends JFrame implements ActionListener {
 		return newPanel;
 	}
 	
-	public static void main(String[] args) {
-		@SuppressWarnings("unused")
-		GUI gui = new GUI();
-	}
-	
 	private void update() {
 		// Update buttons
-		Component[] comps = boardPanel.getComponents();
+		Component[] comps = ((JPanel)boardPanel.getComponents()[0]).getComponents();
 		for (int i = 0; i < comps.length; i++) {
 			if (comps[i] instanceof TileButton) {
 				((TileButton)comps[i]).update();
@@ -175,7 +176,6 @@ public class GUI extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
 		if (e.getSource() == rotateLeftButton) {
 			nextTile.rotateLeft();
 			nextTileButton.update();
@@ -191,23 +191,19 @@ public class GUI extends JFrame implements ActionListener {
 				nextTile = model.randomLegalTile();
 				nextTileButton.setTile(nextTile);
 			}
-			
 			update();
 		} else if (e.getSource() == boardSizeSelector) {
 			String newValue = (String)boardSizeSelector.getSelectedItem();
 			int newSize = Integer.parseInt(newValue.split(" ")[0]);
 			if (newSize != boardSize) {
-				boardSize = newSize;
-				model = new Model(newSize);
-				boardPanel.removeAll();
-				boardPanel.add(boardPanelWithSize(newSize));
-				// TODO Make a new random tile - it's really beginning to look like this should be a method.
-				revalidate();
-				repaint();
-				update();
+				newGame(newSize);
 			}
 		}
-		
+	}
+	
+	public static void main(String[] args) {
+		@SuppressWarnings("unused")
+		GUI gui = new GUI();
 	}
 
 }
