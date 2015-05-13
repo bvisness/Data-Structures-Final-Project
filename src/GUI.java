@@ -57,6 +57,10 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private JLabel blueScoreLabel;
 	
+	private JPanel optionsFields;
+	
+	private JButton optionsButton;
+	
 	private JComboBox<String> boardSizeSelector;
 	
 	private GUI() {		
@@ -106,7 +110,10 @@ public class GUI extends JFrame implements ActionListener {
 		scorePanel.add(scoreMarkersPanel);
 		scorePanel.add(scoresPanel);
 		
-		JPanel optionsPanel = new JPanel(new GridLayout(1,1));
+		// Build the options panel
+		JPanel optionsPanel = new JPanel();
+		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
+		optionsFields = new JPanel(new GridLayout(1,1));
 		boardSizeSelector = new JComboBox<String>();
 		boardSizeSelector.addItem("3 x 3");
 		boardSizeSelector.addItem("5 x 5");
@@ -114,7 +121,14 @@ public class GUI extends JFrame implements ActionListener {
 		boardSizeSelector.addItem("15 x 15");
 		boardSizeSelector.setSelectedIndex(1);
 		boardSizeSelector.addActionListener(this);
-		optionsPanel.add(boardSizeSelector);
+		optionsFields.add(boardSizeSelector);
+		optionsFields.setVisible(false);
+		JPanel optionsButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		optionsButton = new JButton("*");
+		optionsButton.addActionListener(this);
+		optionsButtonPanel.add(optionsButton);
+		optionsPanel.add(optionsFields);
+		optionsPanel.add(optionsButtonPanel);
 		
 		inputPanel = new JPanel();
 		inputPanel.setLayout(new BorderLayout());
@@ -127,6 +141,7 @@ public class GUI extends JFrame implements ActionListener {
 		this.getContentPane().add(boardPanel);
 		this.getContentPane().add(inputPanel);
 		this.setPreferredSize(new Dimension(BOARD_WIDTH + INPUT_WIDTH, BOARD_WIDTH));
+		this.setResizable(false);
 		
 		newGame(5);
 		update();
@@ -231,6 +246,8 @@ public class GUI extends JFrame implements ActionListener {
 			if (newSize != boardSize) {
 				newGame(newSize);
 			}
+		} else if (e.getSource() == optionsButton) {
+			optionsFields.setVisible(!optionsFields.isVisible());
 		}
 		setMessage(actionMsg);
 	}
