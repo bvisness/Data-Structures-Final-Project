@@ -47,7 +47,7 @@ public class Model {
 		return board[x][y];
 	}
 	
-	public Tile getTile(Coordinate c) {
+	private Tile getTile(Coordinate c) {
 		return getTile(c.getX(), c.getY());
 	}
 
@@ -197,7 +197,7 @@ public class Model {
 		return true;		
 	}
 	
-	public boolean isMoveValid(Coordinate c, Tile tile) {
+	private boolean isMoveValid(Coordinate c, Tile tile) {
 		return isMoveValid(c.getX(), c.getY(), tile);
 	}
 	
@@ -227,6 +227,10 @@ public class Model {
 		
 		tilesPlaced++;
 		nextTurn();
+	}
+	
+	private void placeTile(Coordinate c, Tile tile) {
+		placeTile(c.getX(), c.getY(), tile);
 	}
 	
 	private void updateTiles(int x, int y, QuadrantType type, Owner owner) {
@@ -285,10 +289,6 @@ public class Model {
 	
 	private boolean updateRoadsRecursive(Coordinate c, QuadrantType type, Owner owner, HashSet<Tile> set) {
 		return updateTilesRecursive(c.getX(), c.getY(), type, owner, set);
-	}
-	
-	public void placeTile(Coordinate c, Tile tile) {
-		placeTile(c.getX(), c.getY(), tile);
 	}
 	
 	public Tile randomLegalTile() {
