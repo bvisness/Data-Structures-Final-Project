@@ -1,9 +1,13 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -12,14 +16,65 @@ import javax.swing.JOptionPane;
 @SuppressWarnings("serial")
 public class TileImageButton extends JButton {
 	
+	private static final int ROAD_RGB = Color.CYAN.getRGB();
+	
+	private static final int CITY_RGB = Color.MAGENTA.getRGB();	
+	
 	private Tile tile;
 	
 	private int x;
 	
 	private int y;
 	
-	// FIXME Should return BufferedImage
+	private final int width;
+	
+	private final int height;
+	
+	public TileImageButton() {
+		this(-1, -1, 100, 100, null);
+	}
+	
+	public TileImageButton(int x, int y, int width, int height, Tile tile) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		
+		this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		setTile(tile);
+	}
+	
+	public void setTile(Tile tile) {
+		this.tile = tile;
+		update();
+	}
+	
+	public void update() {
+		try {
+			ImageIcon icon = new ImageIcon(imageForTile(tile));
+			this.setIcon(icon);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		revalidate();
+		repaint();
+	}
+	
+	public int getGameX() {
+		return x;
+	}
+
+	public int getGameY() {
+		return y;
+	}
+	
 	private BufferedImage imageForTile(Tile tile) throws Exception {
+		if (tile == null) {
+			BufferedImage img = ImageIO.read(new File("images/null.png"));
+			return resizeImage(img, this.width, this.height);
+		}
+		
 		String qs = quadrantString(tile);
 		boolean needsFlip = false;
 		int rotations = 0;
@@ -55,9 +110,6 @@ public class TileImageButton extends JButton {
 			
 			throw new Exception("No image found for tile " + tile);
 		} while (false);
-		System.out.println(qs);
-		System.out.println(rotations + " rotations");
-		System.out.println(needsFlip ? "Has flip" : "No flip");
 		
 		BufferedImage img = ImageIO.read(new File(imageFilename(qs)));
 		if (needsFlip) {
@@ -67,7 +119,18 @@ public class TileImageButton extends JButton {
 			img = rotateImage90CounterClockwise(img);
 		}
 		
-		// TODO Recolor the image
+		// Recolor the image
+		if (tile.hasQuadrantType(QuadrantType.ROAD)) {
+			Owner roadOwner = tile.getQuadrantTypeOwner(QuadrantType.ROAD);
+			replaceColor(img, ROAD_RGB, getOwnerRGB(roadOwner));
+		}
+		if (tile.hasQuadrantType(QuadrantType.CITY)) {
+			Owner cityOwner = tile.getQuadrantTypeOwner(QuadrantType.CITY);
+			replaceColor(img, CITY_RGB, getOwnerRGB(cityOwner));
+		}
+		
+		// Resize the image
+		img = resizeImage(img, this.width, this.height);
 		
 		return img;
 	}
@@ -137,17 +200,36 @@ public class TileImageButton extends JButton {
 	    return op.filter(img, null);
 	}
 	
-	public static void main(String[] args) {
-		Tile tile = Tile.randomTile();
-		System.out.println(tile);
-		TileImageButton tb = new TileImageButton();
-		try {
-			ImageIcon icon = new ImageIcon();
-			icon.setImage(tb.imageForTile(tile));
-			JOptionPane.showMessageDialog(null, icon);
+	private static BufferedImage resizeImage(BufferedImage img, int width, int height) {
+		BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+		Graphics g = newImage.createGraphics();
+		g.drawImage(img, 0, 0, width, height, null);
+		g.dispose();
+		
+		return newImage;
+	}
+	
+	public static void replaceColor(BufferedImage img, int originalRGB, int newRGB) {
+		for (int y = 0; y < img.getHeight(); y++) {
+			for (int x = 0; x < img.getWidth(); x++) {
+				int pxColor = img.getRGB(x, y);
+				if (pxColor == originalRGB) {
+					img.setRGB(x, y, newRGB);
+				}
+			}
 		}
-		catch (Exception e) {
-			e.printStackTrace();
+	}
+	
+	private int getOwnerRGB(Owner owner) {
+		if (owner == Owner.NONE) {
+			return Color.LIGHT_GRAY.getRGB();
+		} else if (owner == Owner.RED) {
+			return Color.RED.getRGB();
+		} else if (owner == Owner.BLUE) {
+			return Color.BLUE.getRGB();
+		} else {
+			return -1;
 		}
 	}
 

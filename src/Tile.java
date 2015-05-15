@@ -38,6 +38,17 @@ public class Tile {
 		}
 		return hasType;
 	}
+	
+	public Owner getQuadrantTypeOwner(QuadrantType type) {
+		for (int side = 0; side < 4; side++) {
+			if (getQuadrant(side).getType() == type) {
+				return getQuadrant(side).getOwner(); // We can return the first owner we see
+													 // because all roads or cities will have
+													 // the same owner
+			}
+		}
+		return null;
+	}
 
 	public boolean areRoadsComplete() {
 		return roadsComplete;

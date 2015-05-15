@@ -42,7 +42,7 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private JPanel inputPanel;
 	
-	private TileButton nextTileButton;
+	private TileImageButton nextTileButton;
 	
 	private JButton rotateRightButton;
 	
@@ -75,7 +75,7 @@ public class GUI extends JFrame implements ActionListener {
 		
 		// Build the new tile panel
 		JPanel tilePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		nextTileButton = new TileButton();
+		nextTileButton = new TileImageButton();
 		nextTileButton.setEnabled(false);
 		rotateLeftButton = new JButton("RL");
 		rotateLeftButton.addActionListener(this);
@@ -180,10 +180,11 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private JPanel boardPanelWithSize(int boardSize) {
 		JPanel newPanel = new JPanel(new GridLayout(boardSize, boardSize));
+		int tileSize = BOARD_WIDTH / boardSize;
 		
 		for (int y = 0; y < boardSize; y++) {
 			for (int x = 0; x < boardSize; x++) {
-				TileButton newButton = new TileButton(x, y, model.getTile(x, y));
+				TileImageButton newButton = new TileImageButton(x, y, tileSize, tileSize, model.getTile(x, y));
 				newButton.addActionListener(this);
 				newPanel.add(newButton);
 			}
@@ -196,8 +197,8 @@ public class GUI extends JFrame implements ActionListener {
 		// Update buttons
 		Component[] comps = ((JPanel)boardPanel.getComponents()[0]).getComponents();
 		for (int i = 0; i < comps.length; i++) {
-			if (comps[i] instanceof TileButton) {
-				((TileButton)comps[i]).update();
+			if (comps[i] instanceof TileImageButton) {
+				((TileImageButton)comps[i]).update();
 			}
 		}
 		
@@ -255,8 +256,8 @@ public class GUI extends JFrame implements ActionListener {
 		} else if (e.getSource() == rotateRightButton) {
 			nextTile.rotateRight();
 			nextTileButton.update();
-		} else if (e.getSource() instanceof TileButton) {
-			TileButton theButton = (TileButton)e.getSource();
+		} else if (e.getSource() instanceof TileImageButton) {
+			TileImageButton theButton = (TileImageButton)e.getSource();
 			if (model.isMoveValid(theButton.getGameX(), theButton.getGameY(), nextTile)) {
 				model.placeTile(theButton.getGameX(), theButton.getGameY(), nextTile);
 				theButton.setTile(nextTile);
