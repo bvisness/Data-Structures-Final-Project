@@ -53,6 +53,7 @@ public class TileImageButton extends JButton {
 		try {
 			ImageIcon icon = new ImageIcon(imageForTile(tile));
 			this.setIcon(icon);
+			this.setDisabledIcon(icon);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
