@@ -75,6 +75,20 @@ public class Model {
 		return tilesPlaced >= board.length * board.length;
 	}
 	
+	public Turn getWinner() throws Exception {
+		if (!isGameOver()) {
+			throw new Exception("The game is not over.");
+		}
+		
+		if (redScore > blueScore) {
+			return Turn.RED;
+		} else if (blueScore > redScore) {
+			return Turn.BLUE;
+		} else {
+			return null;
+		}
+	}
+	
 	public Model(int size) {
 		if (size % 2 == 0) {
 			throw new IllegalArgumentException(size + ": The game board size must be odd so it has a middle space.");

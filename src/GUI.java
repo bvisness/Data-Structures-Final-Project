@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -49,6 +50,8 @@ public class GUI extends JFrame implements ActionListener {
 	
 	private JTextPane messagePane;
 	
+	private JButton newGameButton;
+	
 	private JPanel redTurnIndicator;
 	
 	private JPanel blueTurnIndicator;
@@ -67,7 +70,8 @@ public class GUI extends JFrame implements ActionListener {
 		boardPanel = new JPanel(new GridLayout(1,1));
 		boardPanel.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_WIDTH));
 		
-		JPanel centerPanel = new JPanel(new GridLayout(2,1));
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));;
 		
 		// Build the new tile panel
 		JPanel tilePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -80,12 +84,23 @@ public class GUI extends JFrame implements ActionListener {
 		tilePanel.add(rotateLeftButton);
 		tilePanel.add(nextTileButton);
 		tilePanel.add(rotateRightButton);
+		tilePanel.setPreferredSize(new Dimension(INPUT_WIDTH, BOARD_WIDTH / 2));
 		centerPanel.add(tilePanel);
 		
 		// Message box
 		messagePane = new JTextPane();
 		messagePane.setOpaque(false);
+		messagePane.setEditable(false);
 		centerPanel.add(messagePane);
+		
+		// New game button
+		newGameButton = new JButton("New Game");
+		newGameButton.setVisible(false);
+		newGameButton.setPreferredSize(new Dimension(100000, 100)); // I don't know why but I need really big numbers to make this full-width
+		newGameButton.setMinimumSize(new Dimension(100000, 100));   // BoxLayout is really dumb
+		newGameButton.setMaximumSize(new Dimension(100000, 100));   // I actually need all three of these to do this
+		newGameButton.addActionListener(this);
+		centerPanel.add(newGameButton);
 		
 		// Build the score panel
 		JPanel scorePanel = new JPanel();
@@ -158,6 +173,7 @@ public class GUI extends JFrame implements ActionListener {
 		boardPanel.add(boardPanelWithSize(boardSize));
 		nextTile = model.randomLegalTile();
 		nextTileButton.setTile(nextTile);
+		setEnabledRecursive(this.getContentPane(), true);
 		update();
 		revalidate();
 	}
@@ -218,6 +234,17 @@ public class GUI extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 	}
+	
+	private void setEnabledRecursive(Container container, boolean enabled) {
+		container.setEnabled(enabled);
+		Component[] comps = container.getComponents();
+		for (int i = 0; i < comps.length; i++) {
+			comps[i].setEnabled(enabled);
+			if (comps[i] instanceof Container) {
+				setEnabledRecursive((Container)comps[i], enabled);
+			}
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -248,7 +275,36 @@ public class GUI extends JFrame implements ActionListener {
 			}
 		} else if (e.getSource() == optionsButton) {
 			optionsFields.setVisible(!optionsFields.isVisible());
+		} else if (e.getSource() == newGameButton) {
+			newGame(boardSize);
+			newGameButton.setVisible(false);
 		}
+		
+		if (model.isGameOver()) {
+			setEnabledRecursive(boardPanel, false);
+			setEnabledRecursive(inputPanel, false);
+			messagePane.setEnabled(true);
+			redScoreLabel.setEnabled(true);
+			blueScoreLabel.setEnabled(true);
+			newGameButton.setEnabled(true);
+			try {
+				String winString = "The game is over!";
+				Model.Turn winner = model.getWinner();
+				if (winner == Model.Turn.RED) {
+					winString += " Red wins!";
+				} else if (winner == Model.Turn.BLUE) {
+					winString += " Blue wins!";
+				} else if (winner == null){
+					winString += " It's a draw!";
+				}
+				actionMsg = winString;
+				newGameButton.setVisible(true);
+			}
+			catch (Exception ex) {
+				actionMsg = "ERROR: " + ex.getMessage();
+			}
+		}
+		
 		setMessage(actionMsg);
 	}
 	
