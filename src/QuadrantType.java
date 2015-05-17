@@ -13,6 +13,10 @@ public enum QuadrantType {
 	private static final int SIZE = VALUES.length;
 	private static final Random RANDOM = new Random();
 
+	/**
+	 * Gets a random value of QuadrantType.
+	 * @return A random QuadrantType value.
+	 */
 	public static QuadrantType randomType() {
 		return VALUES[RANDOM.nextInt(SIZE)];
 	}
