@@ -113,11 +113,11 @@ public class TileImageButton extends JButton {
 		} while (false);
 		
 		BufferedImage img = ImageIO.read(new File(imageFilename(qs)));
-		if (needsFlip) {
-			img = flipImage(img);
-		}
 		for (int i = 0; i < rotations; i++) {
 			img = rotateImage90CounterClockwise(img);
+		}
+		if (needsFlip) {
+			img = flipImage(img);
 		}
 		
 		// Recolor the image
