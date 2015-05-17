@@ -34,7 +34,7 @@ public class GUI extends JFrame implements ActionListener {
 	/**
 	 * The visual width, in pixels, of the game board.
 	 */
-	private static final int BOARD_WIDTH = 750;
+	private static final int BOARD_WIDTH = 800;
 	
 	/**
 	 * The visual width, in pixels, of the input panel along the right.
@@ -197,7 +197,8 @@ public class GUI extends JFrame implements ActionListener {
 		boardSizeSelector.addItem("5 x 5");
 		boardSizeSelector.addItem("9 x 9");
 		boardSizeSelector.addItem("15 x 15");
-		boardSizeSelector.setSelectedIndex(1);
+		boardSizeSelector.addItem("21 x 21");
+		boardSizeSelector.setSelectedIndex(3);
 		boardSizeSelector.addActionListener(this);
 		optionsFields.add(boardSizeSelector);
 		optionsFields.setVisible(false);
@@ -221,7 +222,7 @@ public class GUI extends JFrame implements ActionListener {
 		this.setPreferredSize(new Dimension(BOARD_WIDTH + INPUT_WIDTH, BOARD_WIDTH));
 		this.setResizable(false);
 		
-		newGame(5);
+		newGame(15);
 		update();
 		
 		pack();
