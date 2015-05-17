@@ -4,6 +4,7 @@
  * @author Ben Visness
  * 
  */
+@SuppressWarnings("serial")
 public class InvalidMoveException extends RuntimeException {
 
 	/**

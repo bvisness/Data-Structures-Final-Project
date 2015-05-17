@@ -251,6 +251,7 @@ public class Model {
 	 * @return A {@linkplain Coordinate} for the next tile.
 	 * @see Coordinate
 	 */
+	@SuppressWarnings("unused")
 	private Coordinate getNextTileCoordinates(Coordinate c, int side) {
 		return getNextTileCoordinates(c.getX(), c.getY(), side);
 	}
@@ -312,6 +313,7 @@ public class Model {
 	 *         given tile, or null if there is none.
 	 * @see Coordinate
 	 */
+	@SuppressWarnings("unused")
 	private Quadrant getNeighborQuadrant(Coordinate c, int side) {
 		return getNeighborQuadrant(c.getX(), c.getY(), side);
 	}
@@ -434,6 +436,7 @@ public class Model {
 	 * @return Whether the Tile can be legally placed at the given x and y.
 	 * @see Coordinate
 	 */
+	@SuppressWarnings("unused")
 	private boolean isMoveValid(Coordinate c, Tile tile) {
 		return isMoveValid(c.getX(), c.getY(), tile);
 	}
@@ -490,6 +493,7 @@ public class Model {
 	 *            The tile to place at the given Coordinate.
 	 * @see Coordinate
 	 */
+	@SuppressWarnings("unused")
 	private void placeTile(Coordinate c, Tile tile) {
 		placeTile(c.getX(), c.getY(), tile);
 	}

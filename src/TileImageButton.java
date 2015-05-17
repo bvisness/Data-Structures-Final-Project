@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
@@ -10,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 
 
 @SuppressWarnings("serial")
@@ -256,6 +254,7 @@ public class TileImageButton extends JButton {
 	 * @return A version of the quadrant string which has been "rotated" 90
 	 *         degrees counterclockwise.
 	 */
+	@SuppressWarnings("unused")
 	private static String rotateStringLeft(String string) {
 		return string.substring(1) + string.charAt(0);
 	}
@@ -305,6 +304,7 @@ public class TileImageButton extends JButton {
 	 * @returnA BufferedImage which is the given image rotated 90 degrees
 	 *          clockwise.
 	 */
+	@SuppressWarnings("unused")
 	private static BufferedImage rotateImage90Clockwise(BufferedImage img) {
 		AffineTransform tx = new AffineTransform();
 	    tx.rotate(Math.PI / 2, img.getWidth() / 2, img.getHeight() / 2);
