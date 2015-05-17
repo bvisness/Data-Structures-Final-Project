@@ -7,6 +7,11 @@
 public class Quadrant {
 	
 	/**
+	 * The tile to which this quadrant belongs.
+	 */
+	private Tile tile;
+	
+	/**
 	 * The type of this quadrant.
 	 */
 	private QuadrantType type;
@@ -46,15 +51,20 @@ public class Quadrant {
 	 */
 	public void setOwner(Owner owner) {
 		this.owner = owner;
+		tile.updateListeners();
 	}
 	
 	/**
-	 * Constructs a new Quadrant with default settings: all
+	 * Constructs a new Quadrant for a given tile with default settings: all
 	 * {@link QuadrantType.GRASS}, owner {@link Owner.NONE}.
+	 * 
+	 * @param tile
+	 *            The tile to which this Quadrant belongs.
 	 */
-	public Quadrant() {
-		type = QuadrantType.GRASS;
-		owner = Owner.NONE;
+	public Quadrant(Tile tile) {
+		this.type = QuadrantType.GRASS;
+		this.owner = Owner.NONE;
+		this.tile = tile;
 	}
 	
 	/**

@@ -12,7 +12,7 @@ import javax.swing.JButton;
 
 
 @SuppressWarnings("serial")
-public class TileImageButton extends JButton {
+public class TileImageButton extends JButton implements TileUpdateListener {
 	
 	/**
 	 * A constant to define the RGB value of a road in the original images.
@@ -28,6 +28,11 @@ public class TileImageButton extends JButton {
 	 * The tile for this button to display.
 	 */
 	private Tile tile;
+	
+	/**
+	 * Whether this tile needs to be visually refreshed.
+	 */
+	private boolean tileDidChange;
 	
 	/**
 	 * The x-coordinate of this tile on the game board.
@@ -90,7 +95,15 @@ public class TileImageButton extends JButton {
 	 * @see TileImageButton#update()
 	 */
 	public void setTile(Tile tile) {
+		if (this.tile != null) {
+			this.tile.removeUpdateListener(this);
+		}
+		
 		this.tile = tile;
+		if (this.tile != null) {
+			this.tile.addUpdateListener(this);
+		}
+		this.tileDidChange = true;
 		update();
 	}
 	
@@ -98,16 +111,19 @@ public class TileImageButton extends JButton {
 	 * Visually refreshes the button.
 	 */
 	public void update() {
-		try {
-			ImageIcon icon = new ImageIcon(imageForTile(tile));
-			this.setIcon(icon);
-			this.setDisabledIcon(icon);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (tileDidChange) {
+			try {
+				ImageIcon icon = new ImageIcon(imageForTile(tile));
+				this.setIcon(icon);
+				this.setDisabledIcon(icon);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			revalidate();
+			repaint();
+			tileDidChange = false;
 		}
-		
-		revalidate();
-		repaint();
 	}
 	
 	/**
@@ -405,6 +421,15 @@ public class TileImageButton extends JButton {
 		} else {
 			return -1;
 		}
+	}
+
+	/**
+	 * Implements tileUpdated from TileUpdateListener. Flags this button as
+	 * needing to be updated.
+	 */
+	@Override
+	public void tileUpdated() {
+		tileDidChange = true;
 	}
 
 }

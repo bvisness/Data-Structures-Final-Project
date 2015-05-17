@@ -1,3 +1,6 @@
+import java.util.HashSet;
+import java.util.Iterator;
+
 /**
  * Defines a tile for Carcassonne.
  * 
@@ -30,6 +33,11 @@ public class Tile {
 	 * The quadrants of this tile, in an array for easy iteration.
 	 */
 	private Quadrant[] quadrants;
+	
+	/**
+	 * A set of update listeners for this tile. A set is chosen rather than a 
+	 */
+	private HashSet<TileUpdateListener> listeners;
 
 	/**
 	 * Gets the quadrants of this tile.
@@ -99,8 +107,10 @@ public class Tile {
 	public Tile() {
 		quadrants = new Quadrant[4];
 		for (int i = 0; i < 4; i++) {
-			quadrants[i] = new Quadrant();
+			quadrants[i] = new Quadrant(this);
 		}
+		
+		listeners = new HashSet<TileUpdateListener>();
 	}
 
 	/**
@@ -125,6 +135,8 @@ public class Tile {
 		quadrants[EAST] = quadrants[SOUTH];
 		quadrants[SOUTH] = quadrants[WEST];
 		quadrants[WEST] = tmp;
+		
+		updateListeners();
 	}
 
 	/**
@@ -136,6 +148,8 @@ public class Tile {
 		quadrants[WEST] = quadrants[SOUTH];
 		quadrants[SOUTH] = quadrants[EAST];
 		quadrants[EAST] = tmp;
+		
+		updateListeners();
 	}
 
 	/**
@@ -158,6 +172,38 @@ public class Tile {
 				+ ". S: "+ quadrants[SOUTH]
 				+ ". W: " + quadrants[WEST]
 				+ ".";
+	}
+	
+	/**
+	 * Adds a TileUpdateListener to the list of listeners.
+	 * 
+	 * @param listener
+	 *            The TileUpdateListener to add.
+	 * @see TileUpdateListener
+	 */
+	public void addUpdateListener(TileUpdateListener listener) {
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Removes a TileUpdateListener from the list of listeners.
+	 * 
+	 * @param listener
+	 *            The TileUpdateListener to remove.
+	 * @see TileUpdateListener
+	 */
+	public void removeUpdateListener(TileUpdateListener listener) {
+		listeners.remove(listener);
+	}
+	
+	/**
+	 * Tells all the listeners to update.
+	 */
+	public void updateListeners() {
+		Iterator<TileUpdateListener> itr = listeners.iterator();
+		while (itr.hasNext()) {
+			itr.next().tileUpdated();
+		}
 	}
 
 }
