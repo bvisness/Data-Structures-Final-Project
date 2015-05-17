@@ -20,7 +20,11 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-
+/**
+ * Defines a GUI for a game of Carcassonne.
+ * @author Ben Visness
+ *
+ */
 public class GUI extends JFrame implements ActionListener {
 	
 	/**
@@ -28,44 +32,104 @@ public class GUI extends JFrame implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * The visual width, in pixels, of the game board.
+	 */
 	private static final int BOARD_WIDTH = 750;
 	
+	/**
+	 * The visual width, in pixels, of the input panel along the right.
+	 */
 	private static final int INPUT_WIDTH = 250;
 	
+	/**
+	 * The Carcassonne model that this GUI uses.
+	 */
 	private Model model;
 	
+	/**
+	 * The tile to place on the board next.
+	 */
 	private Tile nextTile;
 	
+	/**
+	 * The number of spaces in one row or column of the board.
+	 */
 	private int boardSize;
 	
+	/**
+	 * The panel containing the game board.
+	 */
 	private JPanel boardPanel;
 	
+	/**
+	 * The panel containing all the game input stuff.
+	 */
 	private JPanel inputPanel;
 	
+	/**
+	 * The button that displays the next tile to be placed.
+	 */
 	private TileImageButton nextTileButton;
 	
+	/**
+	 * The button that rotates the next tile clockwise.
+	 */
 	private JButton rotateRightButton;
 	
+	/**
+	 * The button that rotates the next tile counterclockwise.
+	 */
 	private JButton rotateLeftButton;
 	
+	/**
+	 * The text pane that displays messages to the user.
+	 */
 	private JTextPane messagePane;
 	
+	/**
+	 * The button that starts a new game.
+	 */
 	private JButton newGameButton;
 	
+	/**
+	 * The panel that indicates that it is red's turn.
+	 */
 	private JPanel redTurnIndicator;
 	
+	/**
+	 * The panel that indicates that it is blue's turn.
+	 */
 	private JPanel blueTurnIndicator;
 	
+	/**
+	 * The label that display's red's score.
+	 */
 	private JLabel redScoreLabel;
 	
+	/**
+	 * The label that display's blue's score.
+	 */
 	private JLabel blueScoreLabel;
 	
+	/**
+	 * The panel that displays the options for the GUI.
+	 */
 	private JPanel optionsFields;
 	
+	/**
+	 * The button that shows and hides the options panel.
+	 */
 	private JButton optionsButton;
 	
+	/**
+	 * The combo box that lets users select different board sizes.
+	 */
 	private JComboBox<String> boardSizeSelector;
 	
+	/**
+	 * Constructs a new GUI.
+	 */
 	private GUI() {		
 		boardPanel = new JPanel(new GridLayout(1,1));
 		boardPanel.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_WIDTH));
@@ -95,7 +159,7 @@ public class GUI extends JFrame implements ActionListener {
 		
 		// New game button
 		newGameButton = new JButton("New Game");
-		newGameButton.setVisible(false);
+		newGameButton.setVisible(true);
 		newGameButton.setPreferredSize(new Dimension(100000, 100)); // I don't know why but I need really big numbers to make this full-width
 		newGameButton.setMinimumSize(new Dimension(100000, 100));   // BoxLayout is really dumb
 		newGameButton.setMaximumSize(new Dimension(100000, 100));   // I actually need all three of these to do this
@@ -166,6 +230,12 @@ public class GUI extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Starts a new game with a given board size.
+	 * 
+	 * @param boardSize
+	 *            The number of tiles in a given row or column of the new board.
+	 */
 	private void newGame(int boardSize) {
 		this.boardSize = boardSize;
 		model = new Model(boardSize);
@@ -178,6 +248,13 @@ public class GUI extends JFrame implements ActionListener {
 		revalidate();
 	}
 	
+	/**
+	 * Creates a new board panel with buttons and stuff.
+	 * 
+	 * @param boardSize
+	 *            The number of tiles in a given row or column of the new board.
+	 * @return A JPanel to be displayed as the game board.
+	 */
 	private JPanel boardPanelWithSize(int boardSize) {
 		JPanel newPanel = new JPanel(new GridLayout(boardSize, boardSize));
 		int tileSize = BOARD_WIDTH / boardSize;
@@ -193,6 +270,9 @@ public class GUI extends JFrame implements ActionListener {
 		return newPanel;
 	}
 	
+	/**
+	 * Updates the state of UI components to reflect the game.
+	 */
 	private void update() {
 		// Update buttons
 		Component[] comps = ((JPanel)boardPanel.getComponents()[0]).getComponents();
@@ -219,6 +299,10 @@ public class GUI extends JFrame implements ActionListener {
 		blueScoreLabel.setText(model.getBlueScore() + "");
 	}
 	
+	/**
+	 * Sets the contents of the message pane.
+	 * @param msg The message to display.
+	 */
 	private void setMessage(String msg) {
 		SimpleAttributeSet font = new SimpleAttributeSet();
 		StyleConstants.setBold(font, true);
@@ -236,6 +320,16 @@ public class GUI extends JFrame implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Recursively enables or disables the contents of a container. For example,
+	 * calling this method on this.getContentPane() will disable or enable every
+	 * single component in the frame, not just those that are direct children.
+	 * 
+	 * @param container
+	 *            The container to recursively enable/disable.
+	 * @param enabled
+	 *            Whether the components should be enabled.
+	 */
 	private void setEnabledRecursive(Container container, boolean enabled) {
 		container.setEnabled(enabled);
 		Component[] comps = container.getComponents();
@@ -247,6 +341,9 @@ public class GUI extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Performs actions, duh
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String actionMsg = "";
@@ -278,7 +375,7 @@ public class GUI extends JFrame implements ActionListener {
 			optionsFields.setVisible(!optionsFields.isVisible());
 		} else if (e.getSource() == newGameButton) {
 			newGame(boardSize);
-			newGameButton.setVisible(false);
+			newGameButton.setVisible(true);
 		}
 		
 		if (model.isGameOver()) {
@@ -309,6 +406,10 @@ public class GUI extends JFrame implements ActionListener {
 		setMessage(actionMsg);
 	}
 	
+	/**
+	 * The main method for this application.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
 		GUI gui = new GUI();
