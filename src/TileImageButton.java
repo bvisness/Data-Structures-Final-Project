@@ -82,7 +82,7 @@ public class TileImageButton extends JButton implements TileUpdateListener {
 		this.width = width;
 		this.height = height;
 		
-		this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		setTile(tile);
 	}
 	
