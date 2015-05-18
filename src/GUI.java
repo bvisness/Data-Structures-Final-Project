@@ -205,10 +205,11 @@ public class GUI extends JFrame implements ActionListener {
 		boardSizeSelector = new JComboBox<String>();
 		boardSizeSelector.addItem("3 x 3");
 		boardSizeSelector.addItem("5 x 5");
+		boardSizeSelector.addItem("7 x 7");
 		boardSizeSelector.addItem("9 x 9");
 		boardSizeSelector.addItem("15 x 15");
 		boardSizeSelector.addItem("21 x 21");
-		boardSizeSelector.setSelectedIndex(3);
+		boardSizeSelector.setSelectedIndex(4);
 		boardSizeSelector.addActionListener(this);
 		optionsFields.add(boardSizeSelector);
 		optionsFields.setVisible(false);
