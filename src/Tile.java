@@ -101,8 +101,6 @@ public class Tile {
 
 	/**
 	 * Constructs a new tile with the default Quadrant options.
-	 * 
-	 * @see Quadrant#Quadrant()
 	 */
 	public Tile() {
 		quadrants = new Quadrant[4];
