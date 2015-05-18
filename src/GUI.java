@@ -166,7 +166,7 @@ public class GUI extends JFrame implements ActionListener {
 		
 		// New game button
 		newGameButton = new JButton("New Game");
-		newGameButton.setVisible(true);
+		newGameButton.setVisible(false);
 		newGameButton.setPreferredSize(new Dimension(100000, 100)); // I don't know why but I need really big numbers to make this full-width
 		newGameButton.setMinimumSize(new Dimension(100000, 100));   // BoxLayout is really dumb
 		newGameButton.setMaximumSize(new Dimension(100000, 100));   // I actually need all three of these to do this
@@ -381,12 +381,13 @@ public class GUI extends JFrame implements ActionListener {
 			int newSize = Integer.parseInt(newValue.split(" ")[0]);
 			if (newSize != boardSize) {
 				newGame(newSize);
+				optionsFields.setVisible(false);
 			}
 		} else if (e.getSource() == optionsButton) {
 			optionsFields.setVisible(!optionsFields.isVisible());
 		} else if (e.getSource() == newGameButton) {
 			newGame(boardSize);
-			newGameButton.setVisible(true);
+			newGameButton.setVisible(false);
 		}
 		
 		if (model.isGameOver()) {
