@@ -19,10 +19,14 @@ public class TileImageButton extends JButton implements TileUpdateListener {
 	 */
 	private static final int ROAD_RGB = Color.CYAN.getRGB();
 	
+	private static final int ROAD_UNOWNED_RGB = Color.WHITE.getRGB();
+	
 	/**
 	 * A constant to define the RGB value of a city in the original images.
 	 */
 	private static final int CITY_RGB = Color.MAGENTA.getRGB();	
+	
+	private static final int CITY_UNOWNED_RGB = new Color(130, 130, 130).getRGB();
 	
 	/**
 	 * The tile for this button to display.
@@ -206,11 +210,11 @@ public class TileImageButton extends JButton implements TileUpdateListener {
 		// Recolor the image
 		if (tile.hasQuadrantType(QuadrantType.ROAD)) {
 			Owner roadOwner = tile.getQuadrantTypeOwner(QuadrantType.ROAD);
-			replaceColor(img, ROAD_RGB, getOwnerRGB(roadOwner));
+			replaceColor(img, ROAD_RGB, getOwnerRGB(roadOwner, QuadrantType.ROAD));
 		}
 		if (tile.hasQuadrantType(QuadrantType.CITY)) {
 			Owner cityOwner = tile.getQuadrantTypeOwner(QuadrantType.CITY);
-			replaceColor(img, CITY_RGB, getOwnerRGB(cityOwner));
+			replaceColor(img, CITY_RGB, getOwnerRGB(cityOwner, QuadrantType.CITY));
 		}
 		
 		// Resize the image
@@ -406,14 +410,22 @@ public class TileImageButton extends JButton implements TileUpdateListener {
 	}
 	
 	/**
-	 * Gets an RGB value for a given owner.
+	 * Gets an RGB value for a given owner and quadrant type.
 	 * @param owner The owner to get a color for.
+	 * @param type The type of quadrant to get a color for.
 	 * @return An RGB value for the given owner.
 	 * @see Owner
+	 * @see QuadrantType
 	 */
-	private int getOwnerRGB(Owner owner) {
+	private int getOwnerRGB(Owner owner, QuadrantType type) {
 		if (owner == Owner.NONE) {
-			return Color.LIGHT_GRAY.getRGB();
+			if (type == QuadrantType.ROAD) {
+				return ROAD_UNOWNED_RGB;
+			} else if (type == QuadrantType.CITY) {
+				return CITY_UNOWNED_RGB;
+			} else {
+				return -1;
+			}
 		} else if (owner == Owner.RED) {
 			return Color.RED.getRGB();
 		} else if (owner == Owner.BLUE) {

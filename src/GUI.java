@@ -7,8 +7,11 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -129,7 +132,7 @@ public class GUI extends JFrame implements ActionListener {
 	/**
 	 * Constructs a new GUI.
 	 */
-	private GUI() {		
+	private GUI() throws Exception {		
 		boardPanel = new JPanel(new GridLayout(1,1));
 		boardPanel.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_WIDTH));
 		
@@ -139,10 +142,15 @@ public class GUI extends JFrame implements ActionListener {
 		// Build the new tile panel
 		JPanel tilePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		nextTileButton = new TileImageButton();
+		nextTileButton.setPreferredSize(new Dimension(100, 100));
 		nextTileButton.setEnabled(false);
-		rotateLeftButton = new JButton("RL");
+		ImageIcon rlIcon = new ImageIcon(ImageIO.read(new File("images/rotateLeft.png")));
+		rotateLeftButton = new JButton();
+		rotateLeftButton.setIcon(rlIcon);
 		rotateLeftButton.addActionListener(this);
-		rotateRightButton = new JButton("RR");
+		ImageIcon rrIcon = new ImageIcon(ImageIO.read(new File("images/rotateRight.png")));
+		rotateRightButton = new JButton();
+		rotateRightButton.setIcon(rrIcon);
 		rotateRightButton.addActionListener(this);
 		tilePanel.add(rotateLeftButton);
 		tilePanel.add(nextTileButton);
@@ -171,9 +179,11 @@ public class GUI extends JFrame implements ActionListener {
 		redTurnIndicator = new JPanel();
 		redTurnIndicator.setOpaque(true);
 		redTurnIndicator.setBackground(Color.RED);
+		redTurnIndicator.setPreferredSize(new Dimension(INPUT_WIDTH / 2, 15));
 		blueTurnIndicator = new JPanel();
 		blueTurnIndicator.setOpaque(true);
 		blueTurnIndicator.setBackground(Color.BLUE);
+		blueTurnIndicator.setPreferredSize(new Dimension(INPUT_WIDTH / 2, 15));
 		scoreMarkersPanel.add(redTurnIndicator);
 		scoreMarkersPanel.add(blueTurnIndicator);
 		JPanel scoresPanel = new JPanel(new GridLayout(1,2));
@@ -203,7 +213,8 @@ public class GUI extends JFrame implements ActionListener {
 		optionsFields.add(boardSizeSelector);
 		optionsFields.setVisible(false);
 		JPanel optionsButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		optionsButton = new JButton("*");
+		optionsButton = new JButton();
+		optionsButton.setIcon(new ImageIcon(ImageIO.read(new File("images/gear.png"))));
 		optionsButton.addActionListener(this);
 		optionsButtonPanel.add(optionsButton);
 		optionsPanel.add(optionsFields);
@@ -411,8 +422,12 @@ public class GUI extends JFrame implements ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		@SuppressWarnings("unused")
-		GUI gui = new GUI();
+		try {
+			@SuppressWarnings("unused")
+			GUI gui = new GUI();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
